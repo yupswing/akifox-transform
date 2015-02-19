@@ -64,15 +64,17 @@ class Transform extends Sprite {
 		Lib.current.stage.addEventListener(MouseEvent.MOUSE_MOVE, setrotationpoint);
 		Lib.current.stage.addEventListener (MouseEvent.MOUSE_DOWN, this_onMouseDown);
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyDown);
-/*
-		kind of unit primitive testing
-		pivot.moveTo(30,30); //30,30
+
+		//kind of unit primitive testing
+		/*pivot.moveTo(30,30); //30,30
 		pivot.translate(100,30); //130,160
 		pivot.moveTo(100,50); //100,50
 		pivot.translate(150); //250,50
 		pivot.setInternalPoint([0,0]); // 150,-50
 		pivot.translate(0,200); //150,150
-		trace(pivot.getAbsolutePoint()); //SHOULD BE 150,150 */
+		trace(pivot.getAbsolutePoint()); //SHOULD BE 150,150*/
+
+		//pivot.scale(2);
 
 		drawme();
 
@@ -87,9 +89,14 @@ class Transform extends Sprite {
 	var angle:Float=0;
 	var langle:Float=0;
 
+	var dCenterMousedown:Float;
+	var center:Point;
+
 
 	private function this_onMouseDown (event:MouseEvent):Void {
 		mousedown = new Point(Std.int(event.stageX),Std.int(event.stageY));
+		center = pivot.getAbsolutePoint();
+		dCenterMousedown = Points.distance(mousedown,center);
 		setAngle(false);
 
 		stage.addEventListener (MouseEvent.MOUSE_MOVE, stage_onMouseMove);
@@ -102,9 +109,12 @@ class Transform extends Sprite {
 		if (!dragged && Points.distance(mousedown,new Point(Std.int(event.stageX),Std.int(event.stageY))) > 5) {
 			dragged = true;
 		} else {
-			if (event.shiftKey) {
-				setAngle();
-			} else {
+			if (event.shiftKey || event.altKey || event.ctrlKey) {
+				if (event.shiftKey) setAngle();
+				if (event.altKey) setScale(event);
+				//if (event.ctrlKey)
+			} 
+			else {
 				setPosition(event.stageX,event.stageY);
 			}
 		}
@@ -121,8 +131,13 @@ class Transform extends Sprite {
 		aa.x-=pt.x;
 		aa.y-=pt.y;
 		angle = Math.atan2(aa.x, aa.y);
-		if (rotate) pivot.rotate(-(angle-langle)/Transformation._DEG2RAD);
+		if (rotate) pivot.rotate(-(angle-langle)/Transformation.DEG2RAD);
 		langle=angle;
+	}
+
+	private function setScale(event:MouseEvent) {
+		var dNowCenter = Points.distance(center,new Point(Std.int(event.stageX),Std.int(event.stageY)));
+		pivot.setScale(dNowCenter/dCenterMousedown);
 	}
 
 
@@ -176,9 +191,6 @@ class Transform extends Sprite {
 
 		//circle rotation
 		graphics.drawCircle(pt.x,pt.y,radius);
-		
-
-		//trace();
 
 	}
 
@@ -193,11 +205,14 @@ class Transform extends Sprite {
 	}
 
 	private function onKeyDown(event:KeyboardEvent):Void {
+		if (dragged) return;
 		
 		switch (event.keyCode) {
 			
-			case Keyboard.UP: pivot.skew(10);
-			case Keyboard.DOWN: pivot.skew(-0);
+			//case Keyboard.UP: 
+			//	pivot.skew(50);
+			//case Keyboard.DOWN:
+			//	pivot.skew(-50);
 			case Keyboard.RIGHT: pivot.rotate(-15);
 			case Keyboard.LEFT: pivot.rotate(15);
 			case Keyboard.SPACE: pivot.identity();
@@ -213,6 +228,6 @@ class Transform extends Sprite {
 			
 		}
 		drawme();
-		}
+	}
 	
 }
