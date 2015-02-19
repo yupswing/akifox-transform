@@ -20,6 +20,6 @@ You should get a window with a red square.
 - Drag+<code>Shift</code> to rotate around the pivot point
 - <code>1</code> to <code>9</code> to set the pivot point on the relative anchor point (TOPLEFT, MIDDLELEFT,BOTTOMLEFT,TOPCENTER... BOTTOMRIGHT)
 
-<img src="https://dl.dropboxusercontent.com/u/683344/akifox/git/openfl-transform-sample.png" width="100%"/>
+<img src="https://dl.dropboxusercontent.com/u/683344/akifox/git/openfl-transform-sample.png"/>
 
 More docs when it will become stable.
