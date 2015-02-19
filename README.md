@@ -10,11 +10,12 @@ This class (and this example shows how to implement it) aims to provide an easy 
 
 ## Install and try
 
-<code>git clone --recursive https://github.com/yupswing/openfl-transformation-samples.git<br/>
-cd openfl-transformation-samples<br/>
-lime test neko</code>
+<code>git clone --recursive https://github.com/yupswing/openfl-transformation-samples.git</code><br/>
+<code>cd openfl-transformation-samples</code><br/>
+<code>lime test neko</code><br/>
 
 You should get a window with a red square.
+- Space to reset the transformations
 - Drag to move
 - Click to change pivot point
 - Drag+<code>Shift</code> to rotate around the pivot point
@@ -22,4 +23,9 @@ You should get a window with a red square.
 
 <img src="https://dl.dropboxusercontent.com/u/683344/akifox/git/openfl-transform-sample.png"/>
 
-More docs when it will become stable.
+## Working on
+- Skew (not reliable right now)
+- Flip
+- Scale
+- Cleaning and documenting code
+- Better README.md when it will become stable.
