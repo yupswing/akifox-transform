@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="openfl-transformation-samples" package="com.akifox.openfl-transformation-samples" version="1.0.0" company="Akifox Studio" />
+    <app main="Main" path="Export" file="openfl-transformation-samples" />
+
+	<window fps="60" background="0x333333" />
+	<window width="500" height="500" resizable="true" unless="mobile" />
+	<window fullscreen="true" if="mobile" />
+	<window orientation="landscape" />
+	<window vsync="true" antialiasing="4" if="cpp" />
+	<window hardware="true" allow-shaders="true" require-shaders="true" if="cpp"/>
+	
+	<source path="src" />
+	
+    <haxelib name="openfl" />
+	<haxelib name="actuate" />
+	
+	<assets path="assets/graphics" rename="graphics" include="*.png|*.jpg" />
+	<assets path="assets/fonts" rename="fonts" include="*.ttf" /> 
+
+	<icon path="assets/openfl.svg" />
+
+	<section if="android">
+		<android target-sdk-version="16" />
+		<architecture name="armv7" />
+<!-- 		<compilerflag name="-DHXCPP_X86" />
+		<architecture name="x86" /> -->
+	</section>
+
+
+	<ios deployment="6" binaries="armv7" devices="universal" />
+	
+</project>

@@ -1,0 +1,3 @@
+[submodule "src/akifox"]
+	path = src/akifox
+	url = https://github.com/yupswing/akifox.git
