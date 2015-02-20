@@ -47,13 +47,27 @@ trf.rotate(20); //rotate 20degress clockwise
 
 </pre>
 
-## Finished
-- Pivot point managing
-- Scale
-- Flip
-- Rotate
-
-## Working on
-- Skew (not reliable right now, still needs work)
-- Cleaning and documenting code
-- Better README.md when it will become stable.
+## Work in progress
+- [ ] Unit test
+- [ ] Cleaning and documenting code
+  - [ ] Better README.md when it will become stable.
+- [x] Pivot point managing
+- [ ] Translate
+  - [ ] Get
+  - [x] Set
+  - [x] Sum
+- [ ] Skew (works but need changes)
+  - [ ] Get
+  - [x] Set 
+  - [ ] Sum
+- [x] Scale
+  - [x] Get
+  - [x] Set 
+  - [x] Sum
+- [ ] Flip
+  - [ ] Get
+  - [x] Set 
+- [x] Rotate
+  - [x] Get
+  - [x] Set 
+  - [x] Sum
