@@ -84,8 +84,30 @@ class Transform extends Sprite {
 		pivot.setInternalPoint(0,0); // 150,-50
 		pivot.translate(0,200); //150,150
 		trace(pivot.getAbsolutePoint()); //SHOULD BE 150,150*/
+/*
+		pivot.scaleX(2);
+		trace('scalex 2,1->',pivot.getScaleX(),pivot.getScaleY());
 
-		//pivot.scale(2);
+		pivot.skewX(30);
+		trace('skewx 30->',pivot.getSkewX());
+
+		pivot.scaleX(2.3);
+		trace('scalex 2.3,1->',pivot.getScaleX(),pivot.getScaleY());
+
+		pivot.setRotation(65);
+		trace('get/set',pivot.getRotation(),65);
+
+		pivot.setRotation(73);
+		trace('get/set',pivot.getRotation(),73);
+
+		pivot.setRotation(0);
+		trace('get/set',pivot.getRotation(),0);
+
+		pivot.setRotation(185);
+		trace('get/set',pivot.getRotation(),185);
+
+		pivot.setRotation(20);
+		trace('get/set',pivot.getRotation(),20);*/
 
 		drawme();
 
@@ -108,6 +130,8 @@ class Transform extends Sprite {
 	var dCenterMousedown:Float;
 	var center:Point;
 	var currentscale:Float;
+    var axisX:Point;
+	var axisY:Point;
 
 
 	private function this_onMouseDown (event:MouseEvent):Void {
@@ -117,6 +141,8 @@ class Transform extends Sprite {
 		currentscale = pivot.getScaleX();
 		dCenterMousedown = Points.distance(mousedown,center);
 		setAngle(false);
+    	axisX = new Point(1, 0);        //vector for x - axis
+    	axisY = new Point(0, 1);        //vector for y - axis
 
 		stage_onMouseMove(event);
 
@@ -137,13 +163,42 @@ class Transform extends Sprite {
 			} 
 			else {
 				moving = true;
-				setPosition(event.stageX,event.stageY);
+				setPosition(event);
+				//isometrize(event);
 			}
 		}
 
 	}
 
-	private function setPosition(x:Float,y:Float) {
+	private function isometrize(event:MouseEvent) {
+		var x:Float=event.stageX;
+		var y:Float=event.stageY;
+		var f1:Point = pivot.getAbsolutePoint();
+		//f1.x>0 //front side
+		axisX.setTo(x - f1.x, y - f1.y);  //determine orientation (but magnitude changed as well)
+    	axisX.normalize(1);         //fix magnitude of vector with new orientation to 1 unit
+    	pivot.setTo(axisX.x, axisX.y, axisY.x, axisY.y, 200, 200);
+	}
+
+//http://code.tutsplus.com/tutorials/understanding-affine-transformations-with-matrix-mathematics--active-10884
+/*private function keyUp(e:KeyboardEvent):void {
+if (e.keyCode == Keyboard.LEFT) {
+    velo = delta_negative.transformPoint(velo)
+}
+else if (e.keyCode == Keyboard.RIGHT) {
+    velo = delta_positive.transformPoint(velo)
+}
+if (e.keyCode == Keyboard.UP) {
+    axisY = delta_negative.transformPoint(axisY)
+}
+else if (e.keyCode == Keyboard.DOWN) {
+    axisY = delta_positive.transformPoint(axisY)
+}
+}*/
+
+	private function setPosition(event:MouseEvent) {
+		var x:Float=event.stageX;
+		var y:Float=event.stageY;
 		pivot.setTranslation(x,y);
 	}
 
@@ -155,6 +210,7 @@ class Transform extends Sprite {
 		angle = Math.atan2(aa.x, aa.y);
 		if (rotate) pivot.rotate(-(angle-langle)/Transformation.DEG2RAD);
 		langle=angle;
+		trace('get',pivot.getRotation());
 	}
 
 	private function setScale(event:MouseEvent) {
@@ -277,8 +333,6 @@ class Transform extends Sprite {
 		if (dragged) return;
 		
 		switch (event.keyCode) {
-			case Keyboard.UP: pivot.flipX();
-			case Keyboard.DOWN: pivot.flipY();
 			case Keyboard.RIGHT: pivot.rotate(-15);
 			case Keyboard.LEFT: pivot.rotate(15);
 			case Keyboard.SPACE: pivot.identity();
