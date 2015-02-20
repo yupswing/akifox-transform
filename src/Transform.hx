@@ -3,6 +3,7 @@ package;
 import motion.easing.Quad;
 import motion.Actuate;
 import openfl.display.Bitmap;
+import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.events.MouseEvent;
@@ -39,25 +40,33 @@ class Transform extends Sprite {
 	var rp:Point;
 
 	var pivot:Transformation;
+	var bitmapData:BitmapData = Assets.getBitmapData ("graphics/test.png");
 	
 	public function new () {
+
+
+		bitmapData = Assets.getBitmapData ("graphics/test.png");
 		
 		super();
 
 		Mouse.hide();
 
-		r = new Sprite();
-		r.x = ox;
-		r.y = ox;
-		r.alpha = 0.5;
-
+		/*r = new Sprite();
 		r.graphics.beginFill(0xFF0000,1);
 		r.graphics.drawRect(0,0,ow,oh);
-		r.graphics.endFill();
+		r.graphics.endFill();*/
+
+		var r = new Bitmap(bitmapData);
+		r.smoothing = true;
+
+		r.x = ox;
+		r.y = oy;
+		r.alpha = 0.5;
+
 		addChild(r);
 
 		pivot = new Transformation(r);
-		pivot.setInternalPoint(Transformation.CENTER,Transformation.MIDDLE);
+		pivot.setInternalPoint(Transformation.CENTER,Transformation.TOP);
 		rp = pivot.getAbsolutePoint();
 
 		Lib.current.stage.addEventListener(MouseEvent.MOUSE_MOVE, setrotationpoint);
@@ -68,9 +77,9 @@ class Transform extends Sprite {
 
 		//kind of unit primitive testing
 		/*pivot.setInternalPoint(2,2); // 0,0
-		pivot.moveTo(30,30); //30,30
+		pivot.setTranslation(30,30); //30,30
 		pivot.translate(100,30); //130,160
-		pivot.moveTo(100,50); //100,50
+		pivot.setTranslation(100,50); //100,50
 		pivot.translate(150); //250,50
 		pivot.setInternalPoint(0,0); // 150,-50
 		pivot.translate(0,200); //150,150
@@ -98,12 +107,14 @@ class Transform extends Sprite {
 
 	var dCenterMousedown:Float;
 	var center:Point;
+	var currentscale:Float;
 
 
 	private function this_onMouseDown (event:MouseEvent):Void {
 		dragged = false;
 		mousedown = new Point(Std.int(event.stageX),Std.int(event.stageY));
 		center = pivot.getAbsolutePoint();
+		currentscale = pivot.getScaleX();
 		dCenterMousedown = Points.distance(mousedown,center);
 		setAngle(false);
 
@@ -133,7 +144,7 @@ class Transform extends Sprite {
 	}
 
 	private function setPosition(x:Float,y:Float) {
-		pivot.moveTo(x,y);
+		pivot.setTranslation(x,y);
 	}
 
 	private function setAngle(?rotate:Bool=true) {
@@ -148,7 +159,8 @@ class Transform extends Sprite {
 
 	private function setScale(event:MouseEvent) {
 		var dNowCenter = Points.distance(center,new Point(Std.int(event.stageX),Std.int(event.stageY)));
-		pivot.setScale(dNowCenter/dCenterMousedown);
+		pivot.setScale(dNowCenter/dCenterMousedown*currentscale);
+		trace('set/get',dNowCenter/dCenterMousedown*currentscale,pivot.getScaleX());
 	}
 
 	private function setSkew(event:MouseEvent) {
@@ -161,6 +173,7 @@ class Transform extends Sprite {
 
 		pivot.setSkewX(xs*50);
 		pivot.setSkewY(ys*50);
+		trace('get/set',pivot.getSkewY(),ys*50);
 	}
 
 
@@ -198,14 +211,14 @@ class Transform extends Sprite {
 		graphics.endFill();
 
 		//transformed rect
-		graphics.lineStyle(2, 0x0000FF, .5, false);
-		graphics.drawRect(r.x,r.y,r.width,r.height);
+		//graphics.lineStyle(2, 0x0000FF, .5, false);
+		//graphics.drawRect(r.x,r.y,r.width,r.height);
 
 		//original rect
 		graphics.lineStyle(2, 0xFF00FF, .5, false);
 		graphics.drawRect(ox,oy,ow,oh);
 
-		var radius = Points.distance(pt,new Point(r.x,r.y));
+		//var radius = Points.distance(pt,new Point(r.x,r.y));
 
 		if (rotating || scaling) {
 			graphics.lineStyle(2, 0x00FF00, .5, false);
@@ -215,7 +228,7 @@ class Transform extends Sprite {
 
 		if (rotating) {
 			graphics.lineStyle(2, 0x00FF00, .5, false);
-			graphics.drawCircle(pt.x,pt.y,radius);
+			//graphics.drawCircle(pt.x,pt.y,radius);
 		}
 
 		if (skewing) {
