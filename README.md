@@ -56,10 +56,10 @@ trf.rotate(20); //rotate 20degress clockwise
   - [ ] Get
   - [x] Set
   - [x] Sum
-- [ ] Skew (works but need changes)
-  - [ ] Get
+- [x] Skew
+  - [x] Get
   - [x] Set 
-  - [ ] Sum
+  - [x] Sum
 - [x] Scale
   - [x] Get
   - [x] Set 

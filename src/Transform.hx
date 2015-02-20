@@ -176,8 +176,8 @@ class Transform extends Sprite {
 		var f1:Point = pivot.getAbsolutePoint();
 		//f1.x>0 //front side
 		axisX.setTo(x - f1.x, y - f1.y);  //determine orientation (but magnitude changed as well)
-    	axisX.normalize(1);         //fix magnitude of vector with new orientation to 1 unit
-    	pivot.setTo(axisX.x, axisX.y, axisY.x, axisY.y, 200, 200);
+    	axisX.normalize(1);         	  //fix magnitude of vector with new orientation to 1 unit
+    	pivot.setMatrixTo(axisX.x, axisX.y, axisY.x, axisY.y, 200, 200);
 	}
 
 //http://code.tutsplus.com/tutorials/understanding-affine-transformations-with-matrix-mathematics--active-10884
@@ -227,9 +227,11 @@ else if (e.keyCode == Keyboard.DOWN) {
 		var xs = (Std.int(event.stageX)-Lib.current.stage.stageWidth/2)/(Lib.current.stage.stageWidth/2);
 		var ys = (Std.int(event.stageY)-Lib.current.stage.stageHeight/2)/(Lib.current.stage.stageHeight/2);
 
-		pivot.setSkewX(xs*50);
-		pivot.setSkewY(ys*50);
-		trace('get/set',pivot.getSkewY(),ys*50);
+		//pivot.setSkew(xs*50,null);//ys*50);
+		//pivot.setSkew(null,ys*50);//ys*50);
+		pivot.setSkew(xs*50,ys*50);
+		//trace('get x/set',pivot.getSkewX(),xs*50);
+		//trace('get y/set',pivot.getSkewY(),ys*50);
 	}
 
 
@@ -333,6 +335,11 @@ else if (e.keyCode == Keyboard.DOWN) {
 		if (dragged) return;
 		
 		switch (event.keyCode) {
+			case Keyboard.G: pivot.skewY(30); trace('skewy 30->',pivot.getSkewY());
+			case Keyboard.H: pivot.skewY(-30); trace('skewy -30->',pivot.getSkewY());
+			case Keyboard.B: pivot.skewX(30); trace('skewx 30->',pivot.getSkewX());
+			case Keyboard.N: pivot.skewX(-30); trace('skewx -30->',pivot.getSkewX());
+			case Keyboard.DOWN: pivot.flipY();
 			case Keyboard.RIGHT: pivot.rotate(-15);
 			case Keyboard.LEFT: pivot.rotate(15);
 			case Keyboard.SPACE: pivot.identity();
