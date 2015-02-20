@@ -57,20 +57,22 @@ class Transform extends Sprite {
 		addChild(r);
 
 		pivot = new Transformation(r);
-		pivot.setInternalPoint([2,2]); // imagine a square with 9 anchor points
-									   // 0,0 is top left 1,1 is center and 2,2 is bottom right
+		pivot.setInternalPoint(Transformation.CENTER,Transformation.MIDDLE);
 		rp = pivot.getAbsolutePoint();
 
 		Lib.current.stage.addEventListener(MouseEvent.MOUSE_MOVE, setrotationpoint);
-		Lib.current.stage.addEventListener (MouseEvent.MOUSE_DOWN, this_onMouseDown);
-		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyDown);
+		Lib.current.stage.addEventListener(MouseEvent.MOUSE_DOWN, this_onMouseDown);
+		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onSpecialKeyDown);
+		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onSpecialKeyUp);
 
 		//kind of unit primitive testing
-		/*pivot.moveTo(30,30); //30,30
+		/*pivot.setInternalPoint(2,2); // 0,0
+		pivot.moveTo(30,30); //30,30
 		pivot.translate(100,30); //130,160
 		pivot.moveTo(100,50); //100,50
 		pivot.translate(150); //250,50
-		pivot.setInternalPoint([0,0]); // 150,-50
+		pivot.setInternalPoint(0,0); // 150,-50
 		pivot.translate(0,200); //150,150
 		trace(pivot.getAbsolutePoint()); //SHOULD BE 150,150*/
 
@@ -89,15 +91,23 @@ class Transform extends Sprite {
 	var angle:Float=0;
 	var langle:Float=0;
 
+	var skewing = false;
+	var scaling = false;
+	var rotating = false;
+	var moving = false;
+
 	var dCenterMousedown:Float;
 	var center:Point;
 
 
 	private function this_onMouseDown (event:MouseEvent):Void {
+		dragged = false;
 		mousedown = new Point(Std.int(event.stageX),Std.int(event.stageY));
 		center = pivot.getAbsolutePoint();
 		dCenterMousedown = Points.distance(mousedown,center);
 		setAngle(false);
+
+		stage_onMouseMove(event);
 
 		stage.addEventListener (MouseEvent.MOUSE_MOVE, stage_onMouseMove);
 		stage.addEventListener (MouseEvent.MOUSE_UP, stage_onMouseUp);
@@ -106,15 +116,16 @@ class Transform extends Sprite {
 
 
 	private function stage_onMouseMove (event:MouseEvent):Void {
-		if (!dragged && Points.distance(mousedown,new Point(Std.int(event.stageX),Std.int(event.stageY))) > 5) {
-			dragged = true;
-		} else {
+		if (!dragged && (event.shiftKey || event.altKey || event.ctrlKey)) dragged = true;
+		if (!dragged && Points.distance(mousedown,new Point(Std.int(event.stageX),Std.int(event.stageY))) > 5) dragged = true;
+		if (dragged) {
 			if (event.shiftKey || event.altKey || event.ctrlKey) {
 				if (event.shiftKey) setAngle();
 				if (event.altKey) setScale(event);
-				//if (event.ctrlKey)
+				if (event.ctrlKey) setSkew(event);
 			} 
 			else {
+				moving = true;
 				setPosition(event.stageX,event.stageY);
 			}
 		}
@@ -140,6 +151,18 @@ class Transform extends Sprite {
 		pivot.setScale(dNowCenter/dCenterMousedown);
 	}
 
+	private function setSkew(event:MouseEvent) {
+/*		var dNowMousedownXY = new Point(Std.int(event.stageX)-mousedown.x,Std.int(event.stageY)-mousedown.y);
+		var xs = ((dNowMousedownXY.x/dCenterMousedown));
+		var ys = ((dNowMousedownXY.y/dCenterMousedown));*/
+
+		var xs = (Std.int(event.stageX)-Lib.current.stage.stageWidth/2)/(Lib.current.stage.stageWidth/2);
+		var ys = (Std.int(event.stageY)-Lib.current.stage.stageHeight/2)/(Lib.current.stage.stageHeight/2);
+
+		pivot.setSkewX(xs*50);
+		pivot.setSkewY(ys*50);
+	}
+
 
 	private function stage_onMouseUp (event:MouseEvent):Void {
 		if (!dragged) {
@@ -147,6 +170,11 @@ class Transform extends Sprite {
 			setpivot(event);
 		}
 		dragged = false;
+
+		skewing = false;
+		scaling = false;
+		rotating = false;
+		moving = false;
 
 		stage.removeEventListener (MouseEvent.MOUSE_MOVE, stage_onMouseMove);
 		stage.removeEventListener (MouseEvent.MOUSE_UP, stage_onMouseUp);
@@ -176,21 +204,27 @@ class Transform extends Sprite {
 		//original rect
 		graphics.lineStyle(2, 0xFF00FF, .5, false);
 		graphics.drawRect(ox,oy,ow,oh);
-		graphics.lineStyle(2, 0x00FF00, .5, false);
 
 		var radius = Points.distance(pt,new Point(r.x,r.y));
 
-		if (dragged) {
-			//transformed rect
-			//var endX = pt.x + radius * Math.sin(angle);
-			//var endY = pt.y + radius * Math.cos(angle);
-			graphics.lineStyle(2, 0x0000FF, .5, false);
+		if (rotating || scaling) {
+			graphics.lineStyle(2, 0x00FF00, .5, false);
 			graphics.moveTo(pt.x,pt.y);
 			graphics.lineTo(rp.x,rp.y);
 		}
 
-		//circle rotation
-		graphics.drawCircle(pt.x,pt.y,radius);
+		if (rotating) {
+			graphics.lineStyle(2, 0x00FF00, .5, false);
+			graphics.drawCircle(pt.x,pt.y,radius);
+		}
+
+		if (skewing) {
+			graphics.lineStyle(2, 0x0000FF, .5, false);
+			graphics.moveTo(0,Std.int(Lib.current.stage.stageWidth/2));
+			graphics.lineTo(Std.int(Lib.current.stage.stageWidth),Std.int(Lib.current.stage.stageWidth/2));
+			graphics.moveTo(Std.int(Lib.current.stage.stageHeight/2),0);
+			graphics.lineTo(Std.int(Lib.current.stage.stageHeight/2),Std.int(Lib.current.stage.stageHeight));
+		}
 
 	}
 
@@ -204,30 +238,48 @@ class Transform extends Sprite {
 		drawme();
 	}
 
-	private function onKeyDown(event:KeyboardEvent):Void {
-		if (dragged) return;
+	private function onSpecialKeyDown(event:KeyboardEvent):Void {
 		
 		switch (event.keyCode) {
 			
-			//case Keyboard.UP: 
-			//	pivot.skew(50);
-			//case Keyboard.DOWN:
-			//	pivot.skew(-50);
-			case Keyboard.RIGHT: pivot.rotate(-15);
-			case Keyboard.LEFT: pivot.rotate(15);
-			case Keyboard.SPACE: pivot.identity();
-			case Keyboard.NUMBER_1: pivot.setInternalPoint([0,0]);
-			case Keyboard.NUMBER_2: pivot.setInternalPoint([0,1]);
-			case Keyboard.NUMBER_3: pivot.setInternalPoint([0,2]);
-			case Keyboard.NUMBER_4: pivot.setInternalPoint([1,0]);
-			case Keyboard.NUMBER_5: pivot.setInternalPoint([1,1]);
-			case Keyboard.NUMBER_6: pivot.setInternalPoint([1,2]);
-			case Keyboard.NUMBER_7: pivot.setInternalPoint([2,0]);
-			case Keyboard.NUMBER_8: pivot.setInternalPoint([2,1]);
-			case Keyboard.NUMBER_9: pivot.setInternalPoint([2,2]);
+			case Keyboard.SHIFT: rotating = true;
+			case Keyboard.CONTROL: skewing = true;
+			case Keyboard.ALTERNATE: scaling = true;
 			
 		}
 		drawme();
+	}
+
+	private function onSpecialKeyUp(event:KeyboardEvent):Void {
+		
+		switch (event.keyCode) {
+			case Keyboard.SHIFT: rotating = false;
+			case Keyboard.CONTROL: skewing = false;
+			case Keyboard.ALTERNATE: scaling = false;
+		}
+		drawme();
+	}
+
+	private function onKeyUp(event:KeyboardEvent):Void {
+		if (dragged) return;
+		
+		switch (event.keyCode) {
+			case Keyboard.UP: pivot.flipX();
+			case Keyboard.DOWN: pivot.flipY();
+			case Keyboard.RIGHT: pivot.rotate(-15);
+			case Keyboard.LEFT: pivot.rotate(15);
+			case Keyboard.SPACE: pivot.identity();
+			case Keyboard.NUMBER_1: pivot.setInternalPoint(0,0);
+			case Keyboard.NUMBER_2: pivot.setInternalPoint(0,1);
+			case Keyboard.NUMBER_3: pivot.setInternalPoint(0,2);
+			case Keyboard.NUMBER_4: pivot.setInternalPoint(1,0);
+			case Keyboard.NUMBER_5: pivot.setInternalPoint(1,1);
+			case Keyboard.NUMBER_6: pivot.setInternalPoint(1,2);
+			case Keyboard.NUMBER_7: pivot.setInternalPoint(2,0);
+			case Keyboard.NUMBER_8: pivot.setInternalPoint(2,1);
+			case Keyboard.NUMBER_9: pivot.setInternalPoint(2,2);
+			
+		}
 	}
 	
 }

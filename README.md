@@ -15,10 +15,16 @@ This class (and this example shows how to implement it) aims to provide an easy 
 <code>lime test neko</code><br/>
 
 You should get a window with a red square.
-- Space to reset the transformations
+- <code>Space<code> to reset the transformations
 - Drag to move
-- Click to change pivot point
+- Click to change the pivot point
 - Drag+<code>Shift</code> to rotate around the pivot point
+- Drag+<code>Alt</code> to scale related to the pivot point
+- Drag+<code>Ctrl</code> to skew related to the pivot point (center of the cross is 0,0)
+- <code>UP</code> Flip X 
+- <code>DOWN</code> Flip Y 
+- <code>RIGHT</code> Rotate 15deg
+- <code>LEFT</code> Rotate -15deg
 - <code>1</code> to <code>9</code> to set the pivot point on the relative anchor point (TOPLEFT, MIDDLELEFT,BOTTOMLEFT,TOPCENTER... BOTTOMRIGHT)
 
 <img src="https://dl.dropboxusercontent.com/u/683344/akifox/git/openfl-transform-sample.png"/>
@@ -31,8 +37,7 @@ Once you got a DisplayObject (Sprites, Bitmap...) you can create a Transformatio
 
 <pre>
 trf = new Transformation(YOUROBJECT);
-trf.setInternalPoint([1,1]); // imagine a square with 9 anchor points
-                               // 0,0 is top left / 1,1 is center / 2,2 is bottom right
+trf.setInternalPoint(Transformation.LEFT,Transformation.TOP);
                                
 // these are the Pivot Point coordinates (they will not change unless
 // you change the pivot point position)
@@ -42,9 +47,13 @@ trf.rotate(20); //rotate 20degress clockwise
 
 </pre>
 
-## Working on
-- Skew (not reliable right now)
-- Flip
+## Finished
+- Pivot point managing
 - Scale
+- Flip
+- Rotate
+
+## Working on
+- Skew (not reliable right now, still needs work)
 - Cleaning and documenting code
 - Better README.md when it will become stable.
