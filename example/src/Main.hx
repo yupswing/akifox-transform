@@ -22,13 +22,10 @@ import openfl.geom.Matrix;
 import openfl.geom.Rectangle;
 import openfl.ui.Mouse;
 
-import akifox.debug.Performance;
-import akifox.Utils;
-import akifox.gui.TextFieldSmooth;
-import akifox.Transformation;
-import akifox.Points;
+import transformation.Transformation;
+import Points;
 
-class Transform extends Sprite {
+class Main extends Sprite {
 
 	var r:Sprite;
 
@@ -42,6 +39,10 @@ class Transform extends Sprite {
 	var pivot:Transformation;
 	var bitmapData:BitmapData = Assets.getBitmapData ("graphics/test.png");
 	
+	public function test(event:Event) {
+		trace(event.type);
+	}
+
 	public function new () {
 
 
@@ -56,6 +57,9 @@ class Transform extends Sprite {
 		r.graphics.drawRect(0,0,ow,oh);
 		r.graphics.endFill();*/
 
+		ox = Std.int(Lib.current.stage.stageWidth/2-ow/2);
+		oy = Std.int(Lib.current.stage.stageHeight/2-oh/2);
+
 		var r = new Bitmap(bitmapData);
 		r.smoothing = true;
 
@@ -66,8 +70,8 @@ class Transform extends Sprite {
 		addChild(r);
 
 		pivot = new Transformation(r);
-		pivot.setInternalPoint(Transformation.CENTER,Transformation.TOP);
-		rp = pivot.getAbsolutePoint();
+		pivot.setAnchoredPivot(1,1);
+		rp = pivot.getPivot();
 
 		Lib.current.stage.addEventListener(MouseEvent.MOUSE_MOVE, setrotationpoint);
 		Lib.current.stage.addEventListener(MouseEvent.MOUSE_DOWN, this_onMouseDown);
@@ -75,21 +79,25 @@ class Transform extends Sprite {
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onSpecialKeyDown);
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onSpecialKeyUp);
 
+		pivot.addEventListener(Transformation.TRANSFORM, test);
+		pivot.addEventListener(Transformation.PIVOT_CHANGE, test);
+
 		//kind of unit primitive testing
-		/*pivot.setInternalPoint(2,2); // 0,0
+		/*pivot.setAnchoredPivot(2,2); // 0,0
 		pivot.setTranslation(30,30); //30,30
 		pivot.translate(100,30); //130,160
 		pivot.setTranslation(100,50); //100,50
 		pivot.translate(150); //250,50
-		pivot.setInternalPoint(0,0); // 150,-50
+		pivot.setAnchoredPivot(0,0); // 150,-50
 		pivot.translate(0,200); //150,150
-		trace(pivot.getAbsolutePoint()); //SHOULD BE 150,150*/
+		trace(pivot.getPivot()); //SHOULD BE 150,150*/
 /*
 		pivot.scaleX(2);
 		trace('scalex 2,1->',pivot.getScaleX(),pivot.getScaleY());
 
 		pivot.skewX(30);
-		trace('skewx 30->',pivot.getSkewX());
+		
+		'skewx 30->',pivot.getSkewX());
 
 		pivot.scaleX(2.3);
 		trace('scalex 2.3,1->',pivot.getScaleX(),pivot.getScaleY());
@@ -137,7 +145,7 @@ class Transform extends Sprite {
 	private function this_onMouseDown (event:MouseEvent):Void {
 		dragged = false;
 		mousedown = new Point(Std.int(event.stageX),Std.int(event.stageY));
-		center = pivot.getAbsolutePoint();
+		center = pivot.getPivot();
 		currentscale = pivot.getScaleX();
 		dCenterMousedown = Points.distance(mousedown,center);
 		setAngle(false);
@@ -162,9 +170,18 @@ class Transform extends Sprite {
 				if (event.ctrlKey) setSkew(event);
 			} 
 			else {
+				// * normal test
 				moving = true;
 				setPosition(event);
+
+				// * isometrize test
 				//isometrize(event);
+
+				// * iphone test
+/*				rotating = true;
+				rotating = true;
+				setAngle();
+				setScale(event);*/
 			}
 		}
 
@@ -173,7 +190,7 @@ class Transform extends Sprite {
 	private function isometrize(event:MouseEvent) {
 		var x:Float=event.stageX;
 		var y:Float=event.stageY;
-		var f1:Point = pivot.getAbsolutePoint();
+		var f1:Point = pivot.getPivot();
 		//f1.x>0 //front side
 		axisX.setTo(x - f1.x, y - f1.y);  //determine orientation (but magnitude changed as well)
     	axisX.normalize(1);         	  //fix magnitude of vector with new orientation to 1 unit
@@ -197,26 +214,24 @@ else if (e.keyCode == Keyboard.DOWN) {
 }*/
 
 	private function setPosition(event:MouseEvent) {
-		var x:Float=event.stageX;
-		var y:Float=event.stageY;
-		pivot.setTranslation(x,y);
+		pivot.setTranslation(new Point(Std.int(event.stageX),Std.int(event.stageY)));
 	}
 
 	private function setAngle(?rotate:Bool=true) {
-		var pt:Point = pivot.getAbsolutePoint();
+		var pt:Point = pivot.getPivot();
 		var aa:Point = Points.clone(rp);
 		aa.x-=pt.x;
 		aa.y-=pt.y;
 		angle = Math.atan2(aa.x, aa.y);
 		if (rotate) pivot.rotate(-(angle-langle)/Transformation.DEG2RAD);
 		langle=angle;
-		trace('get',pivot.getRotation());
+		//trace('get',pivot.getRotation());
 	}
 
 	private function setScale(event:MouseEvent) {
 		var dNowCenter = Points.distance(center,new Point(Std.int(event.stageX),Std.int(event.stageY)));
 		pivot.setScale(dNowCenter/dCenterMousedown*currentscale);
-		trace('set/get',dNowCenter/dCenterMousedown*currentscale,pivot.getScaleX());
+		//trace('set/get',dNowCenter/dCenterMousedown*currentscale,pivot.getScaleX());
 	}
 
 	private function setSkew(event:MouseEvent) {
@@ -254,7 +269,7 @@ else if (e.keyCode == Keyboard.DOWN) {
 	}
 
 	private function drawme(){
-		var pt:Point = pivot.getAbsolutePoint();
+		var pt:Point = pivot.getPivot();
 
 		graphics.clear();
 
@@ -276,7 +291,7 @@ else if (e.keyCode == Keyboard.DOWN) {
 		graphics.lineStyle(2, 0xFF00FF, .5, false);
 		graphics.drawRect(ox,oy,ow,oh);
 
-		//var radius = Points.distance(pt,new Point(r.x,r.y));
+		//var radius = Points.distance(pt,new Point(r.transform.matrix.tx,r.transform.matrix.ty));
 
 		if (rotating || scaling) {
 			graphics.lineStyle(2, 0x00FF00, .5, false);
@@ -286,7 +301,7 @@ else if (e.keyCode == Keyboard.DOWN) {
 
 		if (rotating) {
 			graphics.lineStyle(2, 0x00FF00, .5, false);
-			//graphics.drawCircle(pt.x,pt.y,radius);
+			graphics.drawCircle(pt.x,pt.y,Points.distance(pt,rp));
 		}
 
 		if (skewing) {
@@ -300,7 +315,7 @@ else if (e.keyCode == Keyboard.DOWN) {
 	}
 
 	private function setpivot (event:MouseEvent):Void {
-		pivot.setAbsolutePoint(Std.int(event.stageX),Std.int(event.stageY));
+		pivot.setPivot(new Point(Std.int(event.stageX),Std.int(event.stageY)));
 		drawme();
 	}
 
@@ -335,23 +350,23 @@ else if (e.keyCode == Keyboard.DOWN) {
 		if (dragged) return;
 		
 		switch (event.keyCode) {
-			case Keyboard.G: pivot.skewY(30); trace('skewy 30->',pivot.getSkewY());
-			case Keyboard.H: pivot.skewY(-30); trace('skewy -30->',pivot.getSkewY());
-			case Keyboard.B: pivot.skewX(30); trace('skewx 30->',pivot.getSkewX());
-			case Keyboard.N: pivot.skewX(-30); trace('skewx -30->',pivot.getSkewX());
+			case Keyboard.G: pivot.skewY(30); //trace('skewy 30->',pivot.getSkewY());
+			case Keyboard.H: pivot.skewY(-30); //trace('skewy -30->',pivot.getSkewY());
+			case Keyboard.B: pivot.skewX(30); //trace('skewx 30->',pivot.getSkewX());
+			case Keyboard.N: pivot.skewX(-30); //trace('skewx -30->',pivot.getSkewX());
 			case Keyboard.DOWN: pivot.flipY();
 			case Keyboard.RIGHT: pivot.rotate(-15);
 			case Keyboard.LEFT: pivot.rotate(15);
 			case Keyboard.SPACE: pivot.identity();
-			case Keyboard.NUMBER_1: pivot.setInternalPoint(0,0);
-			case Keyboard.NUMBER_2: pivot.setInternalPoint(0,1);
-			case Keyboard.NUMBER_3: pivot.setInternalPoint(0,2);
-			case Keyboard.NUMBER_4: pivot.setInternalPoint(1,0);
-			case Keyboard.NUMBER_5: pivot.setInternalPoint(1,1);
-			case Keyboard.NUMBER_6: pivot.setInternalPoint(1,2);
-			case Keyboard.NUMBER_7: pivot.setInternalPoint(2,0);
-			case Keyboard.NUMBER_8: pivot.setInternalPoint(2,1);
-			case Keyboard.NUMBER_9: pivot.setInternalPoint(2,2);
+			case Keyboard.NUMBER_1: pivot.setAnchoredPivot(Transformation.LEFT,Transformation.TOP);
+			case Keyboard.NUMBER_2: pivot.setAnchoredPivot(Transformation.LEFT,Transformation.MIDDLE);
+			case Keyboard.NUMBER_3: pivot.setAnchoredPivot(Transformation.LEFT,Transformation.BOTTOM);
+			case Keyboard.NUMBER_4: pivot.setAnchoredPivot(Transformation.CENTER,Transformation.TOP);
+			case Keyboard.NUMBER_5: pivot.setAnchoredPivot(Transformation.CENTER,Transformation.MIDDLE);
+			case Keyboard.NUMBER_6: pivot.setAnchoredPivot(Transformation.CENTER,Transformation.BOTTOM);
+			case Keyboard.NUMBER_7: pivot.setAnchoredPivot(Transformation.RIGHT,Transformation.TOP);
+			case Keyboard.NUMBER_8: pivot.setAnchoredPivot(Transformation.RIGHT,Transformation.MIDDLE);
+			case Keyboard.NUMBER_9: pivot.setAnchoredPivot(Transformation.RIGHT,Transformation.BOTTOM);
 			
 		}
 	}

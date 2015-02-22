@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<meta title="openfl-transformation-samples" package="com.akifox.openfl-transformation-samples" version="1.0.0" company="Akifox Studio" />
-    <app main="Main" path="Export" file="openfl-transformation-samples" />
+	<meta title="transformation-example" package="com.akifox.transformation-example" version="1.0.0" company="Akifox Studio" />
+    <app main="Main" path="bin" file="transformation-example" />
 
 	<window fps="60" background="0x333333" />
 	<window width="500" height="500" resizable="true" unless="mobile" />
@@ -28,6 +28,8 @@
 		<architecture name="x86" /> -->
 	</section>
 
+	<!--<haxeflag name="-xml" value="bin/doc.xml" />-->
+	<include path="../" />
 
 	<ios deployment="6" binaries="armv7" devices="universal" />
 	
