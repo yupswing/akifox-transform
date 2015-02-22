@@ -23,7 +23,7 @@ You should get a window with a OpenFL logo square.
 - Click to change the Pivot Point
 - Drag+<code>SHIFT</code> to rotate around the pivot point
 - Drag+<code>ALT</code> to scale related to the pivot point
-- Drag+<code>CTRL</code> to skew related to the pivot point (the cross center represents a 0,0 skew)
+- Drag+<code>CMD</code>/<code>CTRL</code> to skew related to the pivot point (the cross center represents a 0,0 skew)
 - <code>1</code> to <code>9</code> to set the pivot point on the relative anchor point (TOPLEFT, MIDDLELEFT,BOTTOMLEFT,TOPCENTER... BOTTOMRIGHT)
 - <code>UP</code>, <code>DOWN</code>, <code>RIGHT</code>, <code>LEFT</code> Move 15px
 - <code>Q</code>, <code>A</code> to Skew X ±15deg

@@ -270,10 +270,10 @@ class Main extends Sprite {
 
 		if (skewingMode) {
 			graphics.lineStyle(2, 0x0000FF, .5, false);
-			graphics.moveTo(0,Std.int(Lib.current.stage.stageWidth/2));
-			graphics.lineTo(Std.int(Lib.current.stage.stageWidth),Std.int(Lib.current.stage.stageWidth/2));
-			graphics.moveTo(Std.int(Lib.current.stage.stageHeight/2),0);
-			graphics.lineTo(Std.int(Lib.current.stage.stageHeight/2),Std.int(Lib.current.stage.stageHeight));
+			graphics.moveTo(Std.int(Lib.current.stage.stageWidth/2),0);
+			graphics.lineTo(Std.int(Lib.current.stage.stageWidth/2),Std.int(Lib.current.stage.stageHeight));
+			graphics.moveTo(0,Std.int(Lib.current.stage.stageHeight/2));
+			graphics.lineTo(Std.int(Lib.current.stage.stageWidth),Std.int(Lib.current.stage.stageHeight/2));
 		}
 
 	}
