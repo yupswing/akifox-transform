@@ -10,29 +10,48 @@ What are the affine transformation you might ask...
 
 You can find a working example in the <a href="https://github.com/yupswing/akifox-transform/tree/master/example">example folder</a>. (read below for more information)
 
-## Install and try
+## Example demo
 
-As soon as stable it will be submitted an haxelib package.
-For now just follow this instructions:
-
-<code>git clone https://github.com/yupswing/akifox-transform.git</code><br/>
-<code>cd akifox-transform/example</code><br/>
-<code>lime test neko</code><br/>
-
-You should get a window with a OpenFL logo square.
-- <code>Space</code> to reset the transformations
-- Drag to move
-- Click to change the pivot point
-- Drag+<code>Shift</code> to rotate around the pivot point
-- Drag+<code>Alt</code> to scale related to the pivot point
-- Drag+<code>Ctrl</code> to skew related to the pivot point (center of the cross is 0,0)
-- <code>UP</code> Flip X 
-- <code>DOWN</code> Flip Y 
-- <code>RIGHT</code> Rotate 15deg
-- <code>LEFT</code> Rotate -15deg
-- <code>1</code> to <code>9</code> to set the pivot point on the relative anchor point (TOPLEFT, MIDDLELEFT,BOTTOMLEFT,TOPCENTER... BOTTOMRIGHT)
+**Flash build:** <a href="https://dl.dropboxusercontent.com/u/683344/akifox/akifox-transform/transformation-example.swf">transformation-example.swf</a>
 
 <img src="https://dl.dropboxusercontent.com/u/683344/akifox/git/transformation-example.png"/>
+
+You should get a window with a OpenFL logo square.
+- <code>Z</code> to toggle debug drawings
+- <code>SPACE</code> to reset the transformations
+- Drag to move
+- Click to change the Pivot Point
+- Drag+<code>SHIFT</code> to rotate around the pivot point
+- Drag+<code>ALT</code> to scale related to the pivot point
+- Drag+<code>CTRL</code> to skew related to the pivot point (the cross center represents a 0,0 skew)
+- <code>1</code> to <code>9</code> to set the pivot point on the relative anchor point (TOPLEFT, MIDDLELEFT,BOTTOMLEFT,TOPCENTER... BOTTOMRIGHT)
+- <code>UP</code>, <code>DOWN</code>, <code>RIGHT</code>, <code>LEFT</code> Move 15px
+- <code>Q</code>, <code>A</code> to Skew X ±15deg
+- <code>W</code>, <code>S</code> to Skew Y ±15deg
+- <code>E</code>, <code>D</code> to Scale */1.5
+- <code>R</code>, <code>F</code> to Rotate ±15deg
+
+
+## Install
+
+As soon as stable it will be submitted as an haxelib package.
+If you want to use it right now you can follow these instructions:
+
+```
+haxelib git akifox-transform https://github.com/yupswing/akifox-transform.git
+```
+
+Then in your project add the library reference in your ```project.xml```
+
+```
+<haxelib name="akifox-transform" />
+```
+
+and finally you can import it in your project class with this import
+```
+import com.akifox.transform.Transformation;
+```
+
 
 ## Using the library
 **I DON'T RECOMMEND USING IT RIGHT NOW BECAUSE IT'S A WORK IN PROGRESS AND IT WILL CHANGE MAYBE RADICALLY IN THE PROCESS OF BECOMING STABLE**
@@ -41,7 +60,7 @@ Once you got a DisplayObject (Sprites, Bitmap...) you can create a Transformatio
 (Don't use more than one transformation at a given time. I will code this check later on)
 
 ````haxe
-import transformation.Transformation;
+import com.akifox.transform.Transformation;
 
 // [...]
     trf = new Transformation(YOUROBJECT);
@@ -59,6 +78,9 @@ import transformation.Transformation;
 - [ ] Cleaning and documenting code
   - [ ] Better README.md when it will become stable.
 - [ ] Package in a haxelib library
+- [ ] Working example
+  - [x] Desktop version
+  - [ ] Mobile version
 - [x] Events (Transform and Pivot change)
 - [x] Pivot point managing
 - [x] Translate
