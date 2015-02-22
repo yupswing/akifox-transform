@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<extension>
-        
-    <haxedef name="akifox-transform"/>
-    <set name="akifox-transform"/>
-    <haxelib name="akifox-transform" />
-        
-</extension>
