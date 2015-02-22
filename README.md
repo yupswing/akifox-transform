@@ -20,7 +20,7 @@ For now just follow this instructions:
 <code>lime test neko</code><br/>
 
 You should get a window with a OpenFL logo square.
-- <code>Space<code> to reset the transformations
+- <code>Space</code> to reset the transformations
 - Drag to move
 - Click to change the pivot point
 - Drag+<code>Shift</code> to rotate around the pivot point
@@ -32,7 +32,7 @@ You should get a window with a OpenFL logo square.
 - <code>LEFT</code> Rotate -15deg
 - <code>1</code> to <code>9</code> to set the pivot point on the relative anchor point (TOPLEFT, MIDDLELEFT,BOTTOMLEFT,TOPCENTER... BOTTOMRIGHT)
 
-<img src="https://dl.dropboxusercontent.com/u/683344/akifox/git/openfl-transform-sample.png"/>
+<img src="https://dl.dropboxusercontent.com/u/683344/akifox/git/transformation-example.png"/>
 
 ## Using the library
 **I DON'T RECOMMEND USING IT RIGHT NOW BECAUSE IT'S A WORK IN PROGRESS AND IT WILL CHANGE MAYBE RADICALLY IN THE PROCESS OF BECOMING STABLE**
@@ -40,9 +40,10 @@ You should get a window with a OpenFL logo square.
 Once you got a DisplayObject (Sprites, Bitmap...) you can create a Transformation object linked to it.
 (Don't use more than one transformation at a given time. I will code this check later on)
 
-<pre>
-import com.akifox.transform.Transformation;
-[...]
+````haxe
+import transformation.Transformation;
+
+// [...]
     trf = new Transformation(YOUROBJECT);
     trf.setAnchoredPivot(Transformation.LEFT,Transformation.TOP);
                                
@@ -51,7 +52,7 @@ import com.akifox.transform.Transformation;
     var pivotCoordinates:Point = trf.getPivot();
 
     trf.rotate(20); //rotate 20degress clockwise
-</pre>
+````
 
 ## Work in progress
 - [ ] Unit test
@@ -78,6 +79,4 @@ import com.akifox.transform.Transformation;
 - [x] Rotate
   - [x] Get
   - [x] Set 
-  - [x] Sum
-
   - [x] Sum
