@@ -1,21 +1,22 @@
-# Transformation HAXE/OpenFL Library
-
 **WARNING: THIS REPO IS A WORK IN PROGRESS**.
 
-The Transformation library aims to provide an easy tool to manage affine transformations using a reliable pivot point.
+# akifox-transform (com.akifox.transform)
+**Transformation HAXE/OpenFL Library**
+
+The akifox-transform library aims to provide an easy tool to manage affine transformations using a reliable pivot point.
 What are the affine transformation you might ask...
 - read <a href="http://en.wikipedia.org/wiki/Affine_transformation">this wikipedia page</a>
 - read <a href="http://www.senocular.com/flash/tutorials/transformmatrix/">this great flash tutorial</a>
 
-You can find a working example in the <a href="https://github.com/yupswing/transformation/tree/master/example">example folder</a>. (read below for more information)
+You can find a working example in the <a href="https://github.com/yupswing/akifox-transform/tree/master/example">example folder</a>. (read below for more information)
 
 ## Install and try
 
 As soon as stable it will be submitted an haxelib package.
 For now just follow this instructions:
 
-<code>git clone https://github.com/yupswing/transformation.git</code><br/>
-<code>cd transformation/example</code><br/>
+<code>git clone https://github.com/yupswing/akifox-transform.git</code><br/>
+<code>cd akifox-transform/example</code><br/>
 <code>lime test neko</code><br/>
 
 You should get a window with a OpenFL logo square.
@@ -40,7 +41,7 @@ Once you got a DisplayObject (Sprites, Bitmap...) you can create a Transformatio
 (Don't use more than one transformation at a given time. I will code this check later on)
 
 <pre>
-import transformation.Transformation;
+import com.akifox.transform.Transformation;
 [...]
     trf = new Transformation(YOUROBJECT);
     trf.setAnchoredPivot(Transformation.LEFT,Transformation.TOP);

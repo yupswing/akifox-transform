@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension>
 	
-	<haxedef name="transformation"/>
-	<set name="transformation"/>
-	
-	<haxelib name="openfl" />
-	
-	<!--<sample path="${haxelib:openfl-samples}" if="create" />-->
+	<haxedef name="akifox-transform"/>
+	<set name="akifox-transform"/>
+	<haxelib name="akifox-transform" />
 	
 </extension>
