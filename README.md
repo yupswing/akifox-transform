@@ -14,7 +14,7 @@ You can find a working example in the <a href="https://github.com/yupswing/akifo
 
 **Flash build:** <a href="https://dl.dropboxusercontent.com/u/683344/akifox/akifox-transform/transformation-example.swf">transformation-example.swf</a>
 
-<img src="https://dl.dropboxusercontent.com/u/683344/akifox/git/transformation-example.png"/>
+<img src="https://dl.dropboxusercontent.com/u/683344/akifox/akifox-transform/transformation-example.png"/>
 
 You should get a window with a OpenFL logo square.
 - <code>Z</code> to toggle debug drawings
