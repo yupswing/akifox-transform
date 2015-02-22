@@ -39,9 +39,11 @@ You should get a window with a OpenFL logo square.
 Once you got a DisplayObject (Sprites, Bitmap...) you can create a Transformation object linked to it.
 (Don't use more than one transformation at a given time. I will code this check later on)
 
-<pre>
+````haxe
 import transformation.Transformation;
-[...]
+
+// [...]
+
     trf = new Transformation(YOUROBJECT);
     trf.setAnchoredPivot(Transformation.LEFT,Transformation.TOP);
                                
@@ -50,7 +52,7 @@ import transformation.Transformation;
     var pivotCoordinates:Point = trf.getPivot();
 
     trf.rotate(20); //rotate 20degress clockwise
-</pre>
+````
 
 ## Work in progress
 - [ ] Unit test
@@ -77,6 +79,4 @@ import transformation.Transformation;
 - [x] Rotate
   - [x] Get
   - [x] Set 
-  - [x] Sum
-
   - [x] Sum
