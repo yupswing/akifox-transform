@@ -2,10 +2,10 @@ package com.akifox.transform;
 
 import openfl.geom.Matrix;
 import openfl.geom.Point;
-import openfl.display.DisplayObject;
-import openfl.events.EventDispatcher;
-
 import openfl.events.Event;
+import openfl.events.EventDispatcher;
+import openfl.display.DisplayObject;
+import openfl.display.Sprite;
 
 // This page was very helpful to understand matrix affine transformation
 // http://www.senocular.com/flash/tutorials/transformmatrix/
@@ -63,6 +63,9 @@ class Transformation extends EventDispatcher
     private var realWidth:Float;
     private var realHeight:Float;
 
+    //debug sprite
+    public var spriteDebug:Sprite;
+
     // Instance
     //  var trf = new Transformation(target);
 	public function new(target:DisplayObject,?pivot:Point=null)
@@ -75,6 +78,7 @@ class Transformation extends EventDispatcher
 		realHeight = target.height;
 		realX = target.x;
 		realY = target.y;
+		spriteDebug = new Sprite();
 
 		if (pivot==null) {
 			//set the pivot point TOPLEFT of the target if nothing specified
@@ -136,6 +140,81 @@ class Transformation extends EventDispatcher
 	private function onPivotChange(){
 		dispatchEvent(new Event(PIVOT_CHANGE));	
 	}
+
+	// DEBUG
+	// #########################################################################
+	public function debugClear() {
+		spriteDebug.graphics.clear();
+	}
+
+	public function debugDraw( drawPivot:Bool=true,
+							   drawOrigin:Bool=true,
+							   drawOriginal:Bool=true,
+							   drawBoundaries:Bool=true,
+							   drawRotation:Bool=true) {
+
+		debugClear();
+		
+		var pivot:Point = getPivot();
+
+		//  p0 .___. p1
+		//	   |   |
+		//  p2 .___. p3
+
+		var p0:Point = new Point(0,0);
+		if (drawOrigin || drawBoundaries) {
+			p0 = getPosition();
+		}
+
+
+		// pivot point
+		if (drawPivot) {
+			spriteDebug.graphics.beginFill(0x00FF00,1);
+			spriteDebug.graphics.drawCircle(pivot.x,pivot.y,5);
+			spriteDebug.graphics.endFill();
+		}
+
+		// original target 0,0 transformed
+		if (drawOrigin) {
+			spriteDebug.graphics.beginFill(0xFFFF00,0.5);
+			spriteDebug.graphics.drawCircle(p0.x,p0.y,5);
+			spriteDebug.graphics.endFill();
+		}
+
+		// original target boundaries (same as original target rect)
+		if (drawOriginal) {
+			spriteDebug.graphics.lineStyle(2, 0x0000FF, .5, false);
+			spriteDebug.graphics.drawRect(realX,realY,realWidth,realHeight);
+		}
+
+		// transformed target boundaries
+		if (drawBoundaries) {
+			var p1:Point;
+			p1 = transformPoint(new Point(realWidth,0));
+			var p2:Point;
+			p2 = transformPoint(new Point(0,realHeight));
+			var p3:Point;
+			p3 = transformPoint(new Point(realWidth,realHeight));
+			var realZeroX = Math.min(Math.min(Math.min(p0.x,p1.x),p2.x),p3.x);
+			var realZeroY = Math.min(Math.min(Math.min(p0.y,p1.y),p2.y),p3.y);
+			spriteDebug.graphics.lineStyle(2, 0xFF00FF, .5, false);
+			spriteDebug.graphics.drawRect(realZeroX,realZeroY,target.width,target.height);
+		}
+
+		// rotation circle
+		if (drawRotation) {
+			spriteDebug.graphics.lineStyle(2, 0x00FF00, .5, false);
+			spriteDebug.graphics.drawCircle(pivot.x,pivot.y,distance(pivot,p0));
+		}
+	}
+
+	// to get the distance between first point and second point
+    private static inline function distance(p0:Point, p1:Point) : Float
+    {
+        var x = p0.x-p1.x;
+        var y = p0.y-p1.y;
+        return Math.sqrt(x*x + y*y);
+    }
 
 
     // PIVOT MANAGMENT
@@ -269,8 +348,7 @@ class Transformation extends EventDispatcher
 	    var m:Matrix = getMatrix();
 
 		//get the pivot NEW absolute position
-        var transformedPoint:Point;
-        transformedPoint = m.transformPoint(offsetPoint);
+        var transformedPoint:Point = m.transformPoint(offsetPoint);
         // get the Pivot position offset between before and after the transformation
         var offset:Point = new Point(transformedPoint.x-originalPoint.x,
         							 transformedPoint.y-originalPoint.y);

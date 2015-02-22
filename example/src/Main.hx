@@ -36,11 +36,16 @@ class Main extends Sprite {
 
 	var rp:Point;
 
+	var debugdraw = true;
+
 	var pivot:Transformation;
 	var bitmapData:BitmapData = Assets.getBitmapData ("graphics/test.png");
 	
-	public function test(event:Event) {
-		trace(event.type);
+	public function onTransform(event:Event) {
+		if (debugdraw) pivot.debugDraw();
+	}
+	public function onPivotChange(event:Event) {
+		if (debugdraw) pivot.debugDraw();
 	}
 
 	public function new () {
@@ -65,9 +70,8 @@ class Main extends Sprite {
 
 		r.x = ox;
 		r.y = oy;
-		r.alpha = 0.5;
+		r.alpha = 0.8;
 
-		addChild(r);
 
 		pivot = new Transformation(r);
 		pivot.setAnchoredPivot(1,1);
@@ -79,8 +83,11 @@ class Main extends Sprite {
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onSpecialKeyDown);
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onSpecialKeyUp);
 
-		pivot.addEventListener(Transformation.TRANSFORM, test);
-		pivot.addEventListener(Transformation.PIVOT_CHANGE, test);
+		pivot.addEventListener(Transformation.TRANSFORM, onTransform);
+		pivot.addEventListener(Transformation.PIVOT_CHANGE, onPivotChange);
+
+		addChild(r);
+		addChild(pivot.spriteDebug);
 
 		//kind of unit primitive testing
 		/*pivot.setAnchoredPivot(2,2); // 0,0
@@ -117,12 +124,10 @@ class Main extends Sprite {
 		pivot.setRotation(20);
 		trace('get/set',pivot.getRotation(),20);*/
 
-		drawme();
+		drawInterface();
+		pivot.debugDraw();
 
 	}
-
-
-	// Event Handlers
 
 	var mousedown:Point;
 	var dragged:Bool=false;
@@ -257,39 +262,26 @@ else if (e.keyCode == Keyboard.DOWN) {
 		}
 		dragged = false;
 
-		skewing = false;
-		scaling = false;
-		rotating = false;
+		skewing = event.ctrlKey;
+		scaling = event.altKey;
+		rotating = event.shiftKey;
 		moving = false;
 
 		stage.removeEventListener (MouseEvent.MOUSE_MOVE, stage_onMouseMove);
 		stage.removeEventListener (MouseEvent.MOUSE_UP, stage_onMouseUp);
-		drawme();
+		drawInterface();
 
 	}
 
-	private function drawme(){
+	private function drawInterface(){
 		var pt:Point = pivot.getPivot();
 
 		graphics.clear();
-
-		//pivot point
-		graphics.beginFill(0x00FF00,1);
-		graphics.drawCircle(pt.x,pt.y,5);
-		graphics.endFill();
 
 		//rotation point
 		graphics.beginFill(((dragged)?0xFF0000:0x0000FF),1);
 		graphics.drawCircle(rp.x,rp.y,5);
 		graphics.endFill();
-
-		//transformed rect
-		//graphics.lineStyle(2, 0x0000FF, .5, false);
-		//graphics.drawRect(r.x,r.y,r.width,r.height);
-
-		//original rect
-		graphics.lineStyle(2, 0xFF00FF, .5, false);
-		graphics.drawRect(ox,oy,ow,oh);
 
 		//var radius = Points.distance(pt,new Point(r.transform.matrix.tx,r.transform.matrix.ty));
 
@@ -297,11 +289,6 @@ else if (e.keyCode == Keyboard.DOWN) {
 			graphics.lineStyle(2, 0x00FF00, .5, false);
 			graphics.moveTo(pt.x,pt.y);
 			graphics.lineTo(rp.x,rp.y);
-		}
-
-		if (rotating) {
-			graphics.lineStyle(2, 0x00FF00, .5, false);
-			graphics.drawCircle(pt.x,pt.y,Points.distance(pt,rp));
 		}
 
 		if (skewing) {
@@ -316,12 +303,11 @@ else if (e.keyCode == Keyboard.DOWN) {
 
 	private function setpivot (event:MouseEvent):Void {
 		pivot.setPivot(new Point(Std.int(event.stageX),Std.int(event.stageY)));
-		drawme();
 	}
 
 	private function setrotationpoint (event:MouseEvent):Void {
 		rp = new Point(Std.int(event.stageX),Std.int(event.stageY));
-		drawme();
+		drawInterface();
 	}
 
 	private function onSpecialKeyDown(event:KeyboardEvent):Void {
@@ -333,7 +319,7 @@ else if (e.keyCode == Keyboard.DOWN) {
 			case Keyboard.ALTERNATE: scaling = true;
 			
 		}
-		drawme();
+		drawInterface();
 	}
 
 	private function onSpecialKeyUp(event:KeyboardEvent):Void {
@@ -343,13 +329,21 @@ else if (e.keyCode == Keyboard.DOWN) {
 			case Keyboard.CONTROL: skewing = false;
 			case Keyboard.ALTERNATE: scaling = false;
 		}
-		drawme();
+		drawInterface();
+	}
+
+	private function debugToggle(){
+		if (debugdraw) pivot.debugClear();
+		else pivot.debugDraw();
+
+		debugdraw = !debugdraw;
 	}
 
 	private function onKeyUp(event:KeyboardEvent):Void {
 		if (dragged) return;
 		
 		switch (event.keyCode) {
+			case Keyboard.D: debugToggle();
 			case Keyboard.G: pivot.skewY(30); //trace('skewy 30->',pivot.getSkewY());
 			case Keyboard.H: pivot.skewY(-30); //trace('skewy -30->',pivot.getSkewY());
 			case Keyboard.B: pivot.skewX(30); //trace('skewx 30->',pivot.getSkewX());
