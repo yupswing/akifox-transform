@@ -1,20 +1,24 @@
-# openfl-transform-examples
+# Transformation HAXE/OpenFL Library
 
-**THIS REPO IS A WORK IN PROGRESS**
+**WARNING: THIS REPO IS A WORK IN PROGRESS**.
 
-This samples (just one for now) shows the capabilities of the Transformation class included in the **akifox library** (which is my personal haxe develop library)
+The Transformation library aims to provide an easy tool to manage affine transformations using a reliable pivot point.
+What are the affine transformation you might ask...
+- read <a href="http://en.wikipedia.org/wiki/Affine_transformation">this wikipedia page</a>
+- read <a href="http://www.senocular.com/flash/tutorials/transformmatrix/">this great flash tutorial</a>
 
-## Goal
-
-This class (and this example shows how to implement it) aims to provide an easy tool to manage affine transformations using a reliable pivot point.
+You can find a working example in the <a href="https://github.com/yupswing/transformation/tree/master/example">example folder</a>. (read below for more information)
 
 ## Install and try
 
-<code>git clone --recursive https://github.com/yupswing/openfl-transformation-samples.git</code><br/>
-<code>cd openfl-transformation-samples</code><br/>
+As soon as stable it will be submitted an haxelib package.
+For now just follow this instructions:
+
+<code>git clone https://github.com/yupswing/transformation.git</code><br/>
+<code>cd transformation/example</code><br/>
 <code>lime test neko</code><br/>
 
-You should get a window with a red square.
+You should get a window with a OpenFL logo square.
 - <code>Space<code> to reset the transformations
 - Drag to move
 - Click to change the pivot point
@@ -29,31 +33,34 @@ You should get a window with a red square.
 
 <img src="https://dl.dropboxusercontent.com/u/683344/akifox/git/openfl-transform-sample.png"/>
 
-## Using the Class
+## Using the library
 **I DON'T RECOMMEND USING IT RIGHT NOW BECAUSE IT'S A WORK IN PROGRESS AND IT WILL CHANGE MAYBE RADICALLY IN THE PROCESS OF BECOMING STABLE**
 
 Once you got a DisplayObject (Sprites, Bitmap...) you can create a Transformation object linked to it.
 (Don't use more than one transformation at a given time. I will code this check later on)
 
 <pre>
-trf = new Transformation(YOUROBJECT);
-trf.setInternalPoint(Transformation.LEFT,Transformation.TOP);
+import transformation.Transformation;
+[...]
+    trf = new Transformation(YOUROBJECT);
+    trf.setAnchoredPivot(Transformation.LEFT,Transformation.TOP);
                                
-// these are the Pivot Point coordinates (they will not change unless
-// you change the pivot point position)
-var pivotCoordinates:Point = trf.getAbsolutePoint();
+    // these are the Pivot Point coordinates (they will not change unless
+    // you change the pivot point position)
+    var pivotCoordinates:Point = trf.getPivot();
 
-trf.rotate(20); //rotate 20degress clockwise
-
+    trf.rotate(20); //rotate 20degress clockwise
 </pre>
 
 ## Work in progress
 - [ ] Unit test
 - [ ] Cleaning and documenting code
   - [ ] Better README.md when it will become stable.
+- [ ] Package in a haxelib library
+- [x] Events (Transform and Pivot change)
 - [x] Pivot point managing
-- [ ] Translate
-  - [ ] Get
+- [x] Translate
+  - [x] Get
   - [x] Set
   - [x] Sum
 - [x] Skew
@@ -65,9 +72,11 @@ trf.rotate(20); //rotate 20degress clockwise
   - [x] Set 
   - [x] Sum
 - [ ] Flip
-  - [ ] Get
+  - [ ] Get (is it possible?)
   - [x] Set 
 - [x] Rotate
   - [x] Get
   - [x] Set 
+  - [x] Sum
+
   - [x] Sum
