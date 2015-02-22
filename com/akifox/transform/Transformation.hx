@@ -11,32 +11,16 @@ import openfl.display.Sprite;
 // http://www.senocular.com/flash/tutorials/transformmatrix/
 
 /**
- * <p>A node in the entity hierarchy, and a collection of components.</p>
- *
- * <p>To iterate over the hierarchy, use the parent, firstChild, next and firstComponent fields. For
- * example:</p>
- *
- * ```
- * // Iterate over entity's children
- * var child = entity.firstChild;
- * while (child != null) {
- *     var next = child.next; // Store in case the child is removed in process()
- *     process(child);
- *     child = next;
- * }
- * ```
+	Transformation class
  */
 class Transformation extends EventDispatcher
 {
 
-	//TODO: NEED TO BE REFACTORED AND DOCUMENTED
+	//TODO: NEED TO BE REFACTORED AND **ESPECIALLY** DOCUMENTED
 
-	// Radians to Degrees and viceversa	
-	/**
-		The value of something.
-		@default 10
-	**/
+	/** Constant factor to pass from degrees to radians **/
     public static var DEG2RAD:Float = Math.PI/180;
+	/** Constant factor to pass from radians to degrees **/
     public static var RAD2DEG:Float = 180/Math.PI;
 
     // Pivot Point Anchors (used by setAnchoredPivot and getAnchoredPivot)
@@ -95,10 +79,6 @@ class Transformation extends EventDispatcher
    	(for example a textfield object with text changed will change size
     but the Transformation class can't be aware of that if you don't
    	call this method)
-	
-	@param   X               The initial X position of the sprite.
-	@param   Y               The initial Y position of the sprite.
-	@param   SimpleGraphic   The graphic you want to display (OPTIONAL - for simple stuff only, do NOT use for animated images!).
 	**/
     public function updateSize() {
     	/*  */
@@ -140,6 +120,21 @@ class Transformation extends EventDispatcher
 	private function onPivotChange(){
 		dispatchEvent(new Event(PIVOT_CHANGE));	
 	}
+
+
+
+	// STATIC UTILS
+	// #########################################################################
+
+	// to get the distance between first point and second point
+    public static inline function distance(p0:Point, p1:Point) : Float
+    {
+        var x = p0.x-p1.x;
+        var y = p0.y-p1.y;
+        return Math.sqrt(x*x + y*y);
+    }
+
+
 
 	// DEBUG
 	// #########################################################################
@@ -208,14 +203,6 @@ class Transformation extends EventDispatcher
 		}
 	}
 
-	// to get the distance between first point and second point
-    private static inline function distance(p0:Point, p1:Point) : Float
-    {
-        var x = p0.x-p1.x;
-        var y = p0.y-p1.y;
-        return Math.sqrt(x*x + y*y);
-    }
-
 
     // PIVOT MANAGMENT
 	// #########################################################################
@@ -242,7 +229,7 @@ class Transformation extends EventDispatcher
 
 	/**
 	Set the pivot in an arbitrary point
-	@param   point:Point 	The pivot point
+	@param A point
 	**/
 	public function setPivot(point:Point) {
 		//unset the Pivot Point Anchor
@@ -254,7 +241,7 @@ class Transformation extends EventDispatcher
 
 	/**
 	Set the pivot offset (from target 0,0) in an arbitrary point
-	@param   point:Point 	The pivot point
+	@param A point
 	**/
 	public function setPivotOffset(point:Point) {
 		//unset the Pivot Point Anchor
@@ -266,7 +253,7 @@ class Transformation extends EventDispatcher
 
 	/**
 	Get the pivot absolute position
-	@returns   Point 	The pivot point
+	@returns   The pivot point absolute position
 	**/
 	public function getPivot():Point {
 		return transformPoint(offsetPoint);
