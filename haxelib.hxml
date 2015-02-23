@@ -1,0 +1,2 @@
+-cmd rm -f bin/haxelib-akifox-transform.zip
+-cmd zip bin/haxelib-akifox-transform.zip -r com include.xml README.md LICENSE haxelib.json
