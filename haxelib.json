@@ -1,0 +1,11 @@
+{     
+  "name": "akifox-transform",
+  "url" : "https://github.com/yupswing/akifox-transform",
+  "license": "MIT",
+  "tags": ["openfl","cross","matrix","transform"],
+  "description": "Affine transformation with Pivot Point Library",
+  "version": "1.0.0",
+  "releasenote": "First stable release",
+  "contributors": ["yupswing"],
+  "dependencies": {"openfl" : ""}
+}

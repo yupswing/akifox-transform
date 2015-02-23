@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<meta title="transformation-example" package="com.akifox.transformation-example" version="1.0.0" company="Akifox Studio" />
-    <app main="Main" path="bin" file="transformation-example" />
+	<meta title="transform-example-interactive" package="com.akifox.transform-example-interactive" version="1.0.0" company="Akifox Studio" />
+    <app main="Main" path="bin" file="transform-example-interactive" />
 
 	<window fps="60" background="0x333333" />
 	<window width="500" height="500" resizable="true" unless="mobile" />
@@ -14,22 +14,15 @@
 	<source path="src" />
 	
     <haxelib name="openfl" />
-	<haxelib name="actuate" />
+
+	<!-- DEVELOPMENT PROCESS -->
+ 	<include path="../../" />
+	<!-- RELEASE -->
+ 	<!-- <haxelib name="akifox-transform" /> -->
 	
 	<assets path="assets/graphics" rename="graphics" include="*.png|*.jpg" />
 	<assets path="assets/fonts" rename="fonts" include="*.ttf" /> 
-
 	<icon path="assets/openfl.svg" />
-
-	<section if="android">
-		<android target-sdk-version="16" />
-		<architecture name="armv7" />
-<!-- 		<compilerflag name="-DHXCPP_X86" />
-		<architecture name="x86" /> -->
-	</section>
-
-	<!--<haxeflag name="-xml" value="bin/doc.xml" />-->
-	<include path="../" />
 
 	<ios deployment="6" binaries="armv7" devices="universal" />
 	
