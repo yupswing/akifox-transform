@@ -1,5 +1,11 @@
 **WARNING: THIS REPO IS A WORK IN PROGRESS**.
 
+[![akifox-transform](https://img.shields.io/badge/library-akifox%20transform%201.0.0-brightgreen.svg)]()
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Haxe 3](https://img.shields.io/badge/language-Haxe%203-orange.svg)](http://www.haxe.org)
+[![OpenFL 2](https://img.shields.io/badge/require-OpenFL 2-red.svg)](http://www.openfl.org)
+[![Cross platform](https://img.shields.io/badge/platform-cross%20platform-lightgrey.svg)](http://www.openfl.org)
+
 # akifox-transform (com.akifox.transform)
 **Transformation HAXE/OpenFL Library**
 
