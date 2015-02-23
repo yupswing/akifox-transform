@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<meta title="transform-example-interactive" package="com.akifox.transform-example-interactive" version="1.0.1dev" company="Akifox Studio" />
+	<meta title="transform-example-interactive" package="com.akifox.transform-example-interactive" version="1.0.1" company="Akifox Studio" />
     <app main="Main" path="bin" file="transform-example-interactive" />
 
 	<window fps="60" background="0x333333" />
@@ -17,9 +17,9 @@
     <haxelib name="actuate" />
 
 	<!-- DEVELOPMENT PROCESS -->
- 	<include path="../../" />
+ 	<!-- <include path="../../" /> -->
 	<!-- RELEASE -->
- 	<!-- <haxelib name="akifox-transform" /> -->
+ 	<haxelib name="akifox-transform" />
 	
 	<assets path="assets/graphics" rename="graphics" include="*.png|*.jpg" />
 	<assets path="assets/fonts" rename="fonts" include="*.ttf" /> 

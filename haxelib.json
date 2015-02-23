@@ -2,10 +2,10 @@
   "name": "akifox-transform",
   "url" : "https://github.com/yupswing/akifox-transform",
   "license": "MIT",
-  "tags": ["openfl","cross","matrix","transform"],
-  "description": "Affine transformation with Pivot Point Library",
+  "tags": ["openfl","cross","flash","cpp","matrix","transform"],
+  "description": "Affine transformations with pivot point",
   "version": "1.0.1",
-  "releasenote": "First stable release",
+  "releasenote": "Added support for motion.Actuate",
   "contributors": ["yupswing"],
   "dependencies": {"openfl" : ""}
 }

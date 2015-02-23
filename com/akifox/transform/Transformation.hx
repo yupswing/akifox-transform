@@ -11,7 +11,7 @@ import openfl.display.DisplayObject;
 
 @author Simone Cingano (yupswing) [Akifox Studio](http://akifox.com)
 
-@version 1.0.1dev
+@version 1.0.1
 [Public repository](https://github.com/yupswing/akifox-transform/)
 
 #### Transformation HAXE/OpenFL Library
