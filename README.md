@@ -12,9 +12,9 @@ You can find a working example in the <a href="https://github.com/yupswing/akifo
 
 ## Example demo
 
-**Flash build:** <a href="https://dl.dropboxusercontent.com/u/683344/akifox/akifox-transform/transformation-example.swf">transformation-example.swf</a>
+**Flash build:** <a href="https://dl.dropboxusercontent.com/u/683344/akifox/akifox-transform/transformation-example.swf" target="_blank">transformation-example.swf
 
-<img src="https://dl.dropboxusercontent.com/u/683344/akifox/akifox-transform/transformation-example.png"/>
+<img src="https://dl.dropboxusercontent.com/u/683344/akifox/akifox-transform/transformation-example.png"/></a>
 
 You should get a window with a OpenFL logo square.
 - <code>Z</code> to toggle debug drawings
@@ -51,6 +51,11 @@ and finally you can import it in your project class with this import
 ```
 import com.akifox.transform.Transformation;
 ```
+
+## Documentation
+
+You can read the full documentation <a href="https://dl.dropboxusercontent.com/u/683344/akifox/akifox-transform/docs/index.html" target="_blank">here</a>
+
 
 
 ## Using the library
