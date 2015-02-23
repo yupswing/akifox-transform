@@ -4,7 +4,7 @@
   "license": "MIT",
   "tags": ["openfl","cross","matrix","transform"],
   "description": "Affine transformation with Pivot Point Library",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "releasenote": "First stable release",
   "contributors": ["yupswing"],
   "dependencies": {"openfl" : ""}

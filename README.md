@@ -1,6 +1,6 @@
 **WARNING: THIS REPO IS A WORK IN PROGRESS**.
 
-[![akifox-transform](https://img.shields.io/badge/library-akifox%20transform%201.0.0-brightgreen.svg)]()
+[![akifox-transform](https://img.shields.io/badge/library-akifox%20transform%201.0.1dev-brightgreen.svg)]()
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Haxe 3](https://img.shields.io/badge/language-Haxe%203-orange.svg)](http://www.haxe.org)
 [![OpenFL 2](https://img.shields.io/badge/require-OpenFL 2-red.svg)](http://www.openfl.org)
@@ -89,31 +89,36 @@ import com.akifox.transform.Transformation;
 ````
 
 ## Work in progress
-- [ ] Unit test
-- [x] Cleaning and documenting code
-  - [ ] Better README.md when it will become stable.
-- [x] Package in a haxelib library (http://lib.haxe.org/p/akifox-transform)
+
 - [ ] Working example
   - [x] Desktop version
   - [ ] Mobile version
-- [x] Events (Transform and Pivot change)
+
+- [x] Cleaning and documenting code
+  - [ ] Better README.md when it will become stable.
+
+- [x] Package in a haxelib library (http://lib.haxe.org/p/akifox-transform)
+
+- [ ] Unit test
 - [x] Pivot point managing
+- [x] Support for motion.Actuate (properties linked to functions get and set)
+- [x] Events (Transform and Pivot change)
 - [x] Translate
   - [x] Get
   - [x] Set
-  - [x] Sum
+  - [x] Add
 - [x] Skew
   - [x] Get
   - [x] Set 
-  - [x] Sum
+  - [x] Add
 - [x] Scale
   - [x] Get
   - [x] Set 
-  - [x] Sum
+  - [x] Add
 - [ ] Flip
   - [ ] Get (it looks like impossible!)
   - [x] Set 
 - [x] Rotate
   - [x] Get
   - [x] Set 
-  - [x] Sum
+  - [x] Add
