@@ -40,14 +40,19 @@ You should get a window with a OpenFL logo square.
 
 ## Install
 
-As soon as stable it will be submitted as an haxelib package.
-If you want to use it right now you can follow these instructions:
+You can easily install the library from haxelib
+```
+haxelib install akifox-transform
+```
 
+If you want to use instead the development version
 ```
 haxelib git akifox-transform https://github.com/yupswing/akifox-transform.git
 ```
 
-Then in your project add the library reference in your ```project.xml```
+## Implement
+
+In your project add the library reference in your ```project.xml```
 
 ```
 <haxelib name="akifox-transform" />
@@ -60,12 +65,11 @@ import com.akifox.transform.Transformation;
 
 ## Documentation
 
-You can read the full documentation <a href="https://dl.dropboxusercontent.com/u/683344/akifox/akifox-transform/docs/index.html" target="_blank">here</a>
+You can read the full Library documentation <a href="https://dl.dropboxusercontent.com/u/683344/akifox/akifox-transform/docs/index.html" target="_blank">here</a>
 
 
 
 ## Using the library
-**I DON'T RECOMMEND USING IT RIGHT NOW BECAUSE IT'S A WORK IN PROGRESS AND IT WILL CHANGE MAYBE RADICALLY IN THE PROCESS OF BECOMING STABLE**
 
 Once you got a DisplayObject (Sprites, Bitmap...) you can create a Transformation object linked to it.
 (Don't use more than one transformation at a given time. I will code this check later on)
@@ -88,7 +92,7 @@ import com.akifox.transform.Transformation;
 - [ ] Unit test
 - [x] Cleaning and documenting code
   - [ ] Better README.md when it will become stable.
-- [ ] Package in a haxelib library
+- [x] Package in a haxelib library (http://lib.haxe.org/p/akifox-transform)
 - [ ] Working example
   - [x] Desktop version
   - [ ] Mobile version
