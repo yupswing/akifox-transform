@@ -5,6 +5,7 @@ import openfl.geom.Point;
 import openfl.events.Event;
 import openfl.events.EventDispatcher;
 import openfl.display.Sprite;
+import openfl.display.DisplayObject;
 
 /**
 
@@ -48,7 +49,7 @@ class Transformation extends EventDispatcher
 	private var offsetPoint:Point;
 
 	// the target object
-	private var target:Dynamic; //should be openfl.display.DisplayObject
+	private var target:DisplayObject;
 
 	// target properties
     private var realX:Float;
@@ -65,7 +66,7 @@ class Transformation extends EventDispatcher
 	* @param target  The object target of the transformations
 	* @param pivot   An absolute point to set the pivot
 	**/
-	public function new(target:Dynamic,?pivot:Point=null)
+	public function new(target:DisplayObject,?pivot:Point=null)
 	{
 
 		super();
