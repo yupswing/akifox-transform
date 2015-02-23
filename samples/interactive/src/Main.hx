@@ -16,6 +16,8 @@ import openfl.events.KeyboardEvent;
 import openfl.ui.Mouse;
 import openfl.ui.Keyboard;
 
+import motion.Actuate;
+
 import com.akifox.transform.Transformation;
 
 class Main extends Sprite {
@@ -326,6 +328,9 @@ class Main extends Sprite {
 			// R F to rotate
 			case Keyboard.R: myspriteTrs.rotate(-15);
 			case Keyboard.F: myspriteTrs.rotate(15);
+			// T G to translate with actuate
+			case Keyboard.T: Actuate.tween (myspriteTrs, 1, { translationX: 100, translationY:100 } );
+			case Keyboard.G: Actuate.tween (myspriteTrs, 1, { translationX: 200, translationY:200 } );
 			// pivot anchored point
 			case Keyboard.NUMBER_1: myspriteTrs.setAnchoredPivot(Transformation.ANCHOR_TOP_LEFT);
 			case Keyboard.NUMBER_2: myspriteTrs.setAnchoredPivot(Transformation.ANCHOR_TOP_CENTER);

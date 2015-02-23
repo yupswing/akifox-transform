@@ -14,11 +14,12 @@
 	<source path="src" />
 	
     <haxelib name="openfl" />
+    <haxelib name="actuate" />
 
 	<!-- DEVELOPMENT PROCESS -->
- 	<!--<include path="../../" />-->
+ 	<include path="../../" />
 	<!-- RELEASE -->
- 	<haxelib name="akifox-transform" />
+ 	<!-- <haxelib name="akifox-transform" /> -->
 	
 	<assets path="assets/graphics" rename="graphics" include="*.png|*.jpg" />
 	<assets path="assets/fonts" rename="fonts" include="*.ttf" /> 

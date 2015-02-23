@@ -590,19 +590,21 @@ class Transformation extends EventDispatcher
 	* Absolute translation on the X axis
 	* @param tx The X coordinate
 	**/
-	public function setTranslationX(tx:Float=0):Void {
+	public function setTranslationX(tx:Float=0):Float {
 	    var m:Matrix = getMatrix();
 	    m.tx = tx-deltaTransformPoint(offsetPoint).x;
 	    setMatrixInternal(m);
+	    return tx;
 	} 
 	/** 
 	* Absolute translation on the Y axis
 	* @param ty The Y coordinate
 	**/
-	public function setTranslationY(ty:Float=0):Void {
+	public function setTranslationY(ty:Float=0):Float {
 	    var m:Matrix = getMatrix();
 	    m.ty = ty-deltaTransformPoint(offsetPoint).y;
 	    setMatrixInternal(m);
+	    return ty;
 	}   
 
 	/** 
@@ -662,6 +664,17 @@ class Transformation extends EventDispatcher
 	{
 		return target.transform.matrix.ty;
 	}
+
+
+	/** Use getTranslationX and setTranslationX **/
+	public var translationX(get, set):Float;
+	private function get_translationX():Float { return getTranslationX(); }
+	private function set_translationX(value:Float):Float { return setTranslationX(value); }
+
+	/** Use getTranslationY and setTranslationY **/
+	public var translationY(get, set):Float;
+	private function get_translationY():Float { return getTranslationY(); }
+	private function set_translationY(value:Float):Float { return setTranslationY(value); }
 
 
 
@@ -724,7 +737,7 @@ class Transformation extends EventDispatcher
 	* 
 	* @param skewXDeg Value for the X axis
 	**/
-	public function setSkewX(skewXDeg:Float=-0.1):Void { setSkew(skewXDeg,-0.1); }
+	public function setSkewX(skewXDeg:Float=-0.1):Float { setSkew(skewXDeg,-0.1); return skewXDeg; }
 
 	/** 
 	* Set the skew on the Y axis to a given value in Degrees
@@ -733,7 +746,7 @@ class Transformation extends EventDispatcher
 	* 
 	* @param skewYDeg Value for the Y axis
 	**/
-	public function setSkewY(skewYDeg:Float):Void { setSkew(-0.1,skewYDeg); }
+	public function setSkewY(skewYDeg:Float):Float { setSkew(-0.1,skewYDeg); return skewYDeg; }
 
 	/** 
 	* Set the skew on the X axis to a given value in Radians
@@ -742,7 +755,7 @@ class Transformation extends EventDispatcher
 	* 
 	* @param skewXRad Value for the X axis
 	**/
-	public function setSkewXRad(skewXRad:Float):Void { setSkewRad(skewXRad,-0.1); }
+	public function setSkewXRad(skewXRad:Float):Float { setSkewRad(skewXRad,-0.1); return skewXRad; }
 
 	/** 
 	* Set the skew on the Y axis to a given value in Radians
@@ -751,7 +764,7 @@ class Transformation extends EventDispatcher
 	* 
 	* @param skewYRad Value for the X axis
 	**/
-	public function setSkewYRad(skewYRad:Float):Void { setSkewRad(-0.1,skewYRad); }
+	public function setSkewYRad(skewYRad:Float):Float { setSkewRad(-0.1,skewYRad); return skewYRad; }
 	
 	/** 
 	* Apply a skew in Radians
@@ -866,6 +879,26 @@ class Transformation extends EventDispatcher
 	**/
 	public function getSkewY():Float { return getSkewYRad()*RAD2DEG; }
 
+	/** Use getSkewX and setSkewX **/
+	public var skewingX(get, set):Float;
+	private function get_skewingX():Float { return getSkewX(); }
+	private function set_skewingX(value:Float):Float { return setSkewX(value); }
+
+	/** Use getSkewY and setSkewY **/
+	public var skewingY(get, set):Float;
+	private function get_skewingY():Float { return getSkewY(); }
+	private function set_skewingY(value:Float):Float { return setSkewY(value); }
+
+	/** Use getSkewXRad and setSkewXRad **/
+	public var skewingXRad(get, set):Float;
+	private function get_skewingXRad():Float { return getSkewXRad(); }
+	private function set_skewingXRad(value:Float):Float { return setSkewXRad(value); }
+
+	/** Use getSkewYRad and setSkewYRad **/
+	public var skewingYRad(get, set):Float;
+	private function get_skewingYRad():Float { return getSkewYRad(); }
+	private function set_skewingYRad(value:Float):Float { return setSkewYRad(value); }
+
 
 	// SCALE TRANSFORMATION
 	// #########################################################################
@@ -944,7 +977,7 @@ class Transformation extends EventDispatcher
 	*
 	* @param value Value for the X axis
 	**/
-	public function setScaleX(scaleX:Float):Void
+	public function setScaleX(scaleX:Float):Float
 	{
         var m:Matrix = getMatrix();
 		var oldValue:Float = getScaleX();
@@ -962,6 +995,7 @@ class Transformation extends EventDispatcher
 			m.b = Math.sin(skewYRad) * scaleX;
 		}
 		setMatrixInternal(m,true);
+		return scaleX;
 	}
 
 	/** 
@@ -969,7 +1003,7 @@ class Transformation extends EventDispatcher
 	*
 	* @param value Value for the Y axis
 	**/
-	public function setScaleY(scaleY:Float):Void
+	public function setScaleY(scaleY:Float):Float
 	{
         var m:Matrix = getMatrix();
 		var oldValue:Float = getScaleY();
@@ -987,6 +1021,7 @@ class Transformation extends EventDispatcher
 			m.d =  Math.cos(skewXRad) * scaleY;
 		}
 		setMatrixInternal(m,true);
+		return scaleY;
 	}
 
 	/** 
@@ -1005,6 +1040,16 @@ class Transformation extends EventDispatcher
         var m:Matrix = target.transform.matrix;
 		return Math.sqrt(m.c*m.c + m.d*m.d);
 	}
+
+	/** Use getScaleX and setScaleX **/
+	public var scalingX(get, set):Float;
+	private function get_scalingX():Float { return getScaleX(); }
+	private function set_scalingX(factor:Float):Float { return setScaleX(factor); }
+
+	// /** Use getScaleY and setScaleY **/
+	public var scalingY(get, set):Float;
+	private function get_scalingY():Float { return getScaleY(); }
+	private function set_scalingY(factor:Float):Float { return setScaleY(factor); }
 
 
 
@@ -1080,7 +1125,7 @@ class Transformation extends EventDispatcher
 	*
 	* @param angle The absolute angle in Radians
 	**/
-	public function setRotationRad(angle:Float):Void 
+	public function setRotationRad(angle:Float):Float 
 	{
 		//get the current angle
 		var currentRotation:Float = getRotationRad();
@@ -1093,6 +1138,8 @@ class Transformation extends EventDispatcher
 		
 		//set the new rotation value
 		rotateRad(angle);
+
+		return angle;
 	}
 
 	/** 
@@ -1100,7 +1147,7 @@ class Transformation extends EventDispatcher
 	*
 	* @param angle The absolute angle in Degrees
 	**/
-	public function setRotation(angle:Float):Void { setRotationRad(angle*DEG2RAD); }
+	public function setRotation(angle:Float):Float { return setRotationRad(angle*DEG2RAD); }
 
 	/** 
 	* @returns The current angle of rotation in Radians
@@ -1137,6 +1184,15 @@ class Transformation extends EventDispatcher
 	**/
 	public function getRotation():Float { return getRotationRad() * RAD2DEG; }
 
+	/** Use getRotation and setRotation **/
+	public var rotation(get, set):Float;
+	private function get_rotation():Float { return getRotation(); }
+	private function set_rotation(angle:Float):Float { return setRotation(angle); }
+
+	/** Use getRotationRad and setRotationRad **/
+	public var rotationRad(get, set):Float;
+	private function get_rotationRad():Float { return getRotationRad(); }
+	private function set_rotationRad(angle:Float):Float { return setRotationRad(angle); }
 
 	// #########################################################################
 	// #########################################################################
