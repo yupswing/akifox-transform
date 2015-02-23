@@ -4,7 +4,6 @@ import openfl.geom.Matrix;
 import openfl.geom.Point;
 import openfl.events.Event;
 import openfl.events.EventDispatcher;
-import openfl.display.DisplayObject;
 import openfl.display.Sprite;
 
 // This page was very helpful to understand matrix affine transformation
@@ -36,13 +35,13 @@ class Transformation extends EventDispatcher
 
     // the pivot anchor point (using Pivot Point Anchors)
     // example: Transformation.ANCHOR_BOTTOM_CENTER
-    private var pivotPointAnchor:Int = null;
+    private var pivotPointAnchor:Int = -1;
 
     // the pivot offset
 	private var offsetPoint:Point;
 
 	// the target object
-	private var target:DisplayObject;
+	private var target:Dynamic; //should be openfl.display.DisplayObject
 
 	// target properties
     private var realX:Float;
@@ -59,7 +58,7 @@ class Transformation extends EventDispatcher
 	* @param target  The object target of the transformations
 	* @param pivot   An absolute point to set the pivot
 	**/
-	public function new(target:DisplayObject,?pivot:Point=null)
+	public function new(target:Dynamic,?pivot:Point=null)
 	{
 
 		super();
@@ -104,7 +103,7 @@ class Transformation extends EventDispatcher
     	realHeight = target.height;
 
     	// reset the anchored pivot (based on new size)
-    	if (this.pivotPointAnchor!=null) setAnchoredPivot(this.pivotPointAnchor);
+    	if (this.pivotPointAnchor!=-1) setAnchoredPivot(this.pivotPointAnchor);
 
     	// restore the transformation
     	this.setMatrixInternal(currentMatrix);
@@ -300,7 +299,7 @@ class Transformation extends EventDispatcher
 	**/
 	public function setPivot(point:Point) {
 		//unset the Pivot Point Anchor
-		this.pivotPointAnchor = null;
+		this.pivotPointAnchor = -1;
 		//set the pivot offset
 		offsetPoint = inverseTransformPoint(point);
 		this.onPivotChange();
@@ -313,7 +312,7 @@ class Transformation extends EventDispatcher
 	**/
 	public function setPivotOffset(point:Point) {
 		//unset the Pivot Point Anchor
-		this.pivotPointAnchor = null;
+		this.pivotPointAnchor = -1;
 		//set the pivot offset
 		offsetPoint = point;
 		this.onPivotChange();
@@ -362,7 +361,7 @@ class Transformation extends EventDispatcher
 		// realWidth / 2 * 1 is CENTER    ___.___
 		// realWidth / 2 * 2 is RIGHT     ______.
 		// and so on for the Y
-
+		if (pivotPointAnchor<0 || pivotPointAnchor>8) pivotPointAnchor = 0;
 		var pivotPositionX = pivotPointAnchor % 3;
 		var pivotPositionY = Std.int(pivotPointAnchor / 3);
 
@@ -1111,7 +1110,7 @@ class Transformation extends EventDispatcher
 		var m:Matrix = getMatrix();
 
 		// extract translation
-		var p:Point = new Point();
+		var p:Point = new Point(0,0);
 		translate = m.transformPoint(p);
 		m.translate( -translate.x, -translate.y);
 
