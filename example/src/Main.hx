@@ -59,7 +59,7 @@ class Main extends Sprite {
 
 		// create a transformation object on the sprite
 		myspriteTrs = new Transformation(mysprite);
-		myspriteTrs.setAnchoredPivot(1,1);
+		myspriteTrs.setAnchoredPivot(Transformation.ANCHOR_MIDDLE_LEFT);
 		lastPoint = myspriteTrs.getPivot();
 
 
@@ -327,15 +327,15 @@ class Main extends Sprite {
 			case Keyboard.R: myspriteTrs.rotate(-15);
 			case Keyboard.F: myspriteTrs.rotate(15);
 			// pivot anchored point
-			case Keyboard.NUMBER_1: myspriteTrs.setAnchoredPivot(Transformation.LEFT,Transformation.TOP);
-			case Keyboard.NUMBER_2: myspriteTrs.setAnchoredPivot(Transformation.LEFT,Transformation.MIDDLE);
-			case Keyboard.NUMBER_3: myspriteTrs.setAnchoredPivot(Transformation.LEFT,Transformation.BOTTOM);
-			case Keyboard.NUMBER_4: myspriteTrs.setAnchoredPivot(Transformation.CENTER,Transformation.TOP);
-			case Keyboard.NUMBER_5: myspriteTrs.setAnchoredPivot(Transformation.CENTER,Transformation.MIDDLE);
-			case Keyboard.NUMBER_6: myspriteTrs.setAnchoredPivot(Transformation.CENTER,Transformation.BOTTOM);
-			case Keyboard.NUMBER_7: myspriteTrs.setAnchoredPivot(Transformation.RIGHT,Transformation.TOP);
-			case Keyboard.NUMBER_8: myspriteTrs.setAnchoredPivot(Transformation.RIGHT,Transformation.MIDDLE);
-			case Keyboard.NUMBER_9: myspriteTrs.setAnchoredPivot(Transformation.RIGHT,Transformation.BOTTOM);
+			case Keyboard.NUMBER_1: myspriteTrs.setAnchoredPivot(Transformation.ANCHOR_TOP_LEFT);
+			case Keyboard.NUMBER_2: myspriteTrs.setAnchoredPivot(Transformation.ANCHOR_TOP_CENTER);
+			case Keyboard.NUMBER_3: myspriteTrs.setAnchoredPivot(Transformation.ANCHOR_TOP_RIGHT);
+			case Keyboard.NUMBER_4: myspriteTrs.setAnchoredPivot(Transformation.ANCHOR_MIDDLE_LEFT);
+			case Keyboard.NUMBER_5: myspriteTrs.setAnchoredPivot(Transformation.ANCHOR_MIDDLE_CENTER);
+			case Keyboard.NUMBER_6: myspriteTrs.setAnchoredPivot(Transformation.ANCHOR_MIDDLE_RIGHT);
+			case Keyboard.NUMBER_7: myspriteTrs.setAnchoredPivot(Transformation.ANCHOR_BOTTOM_LEFT);
+			case Keyboard.NUMBER_8: myspriteTrs.setAnchoredPivot(Transformation.ANCHOR_BOTTOM_CENTER);
+			case Keyboard.NUMBER_9: myspriteTrs.setAnchoredPivot(Transformation.ANCHOR_BOTTOM_RIGHT);
 		}
 	}
 

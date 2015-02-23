@@ -64,7 +64,7 @@ import com.akifox.transform.Transformation;
 
 // [...]
     trf = new Transformation(YOUROBJECT);
-    trf.setAnchoredPivot(Transformation.LEFT,Transformation.TOP);
+    trf.setAnchoredPivot(Transformation.ANCHOR_TOP_LEFT);
                                
     // these are the Pivot Point coordinates (they will not change unless
     // you change the pivot point position)
@@ -75,7 +75,7 @@ import com.akifox.transform.Transformation;
 
 ## Work in progress
 - [ ] Unit test
-- [ ] Cleaning and documenting code
+- [x] Cleaning and documenting code
   - [ ] Better README.md when it will become stable.
 - [ ] Package in a haxelib library
 - [ ] Working example
@@ -96,7 +96,7 @@ import com.akifox.transform.Transformation;
   - [x] Set 
   - [x] Sum
 - [ ] Flip
-  - [ ] Get (is it possible?)
+  - [ ] Get (it looks like impossible!)
   - [x] Set 
 - [x] Rotate
   - [x] Get
