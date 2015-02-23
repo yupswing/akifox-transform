@@ -8,19 +8,16 @@ import openfl.display.Sprite;
 
 /**
 
-Transformation Class
-====================
-@author Simone Cingano (yupswing) http://akifox.com	
-@version 1.0.0
-Repository: https://github.com/yupswing/akifox-transform/
+@author Simone Cingano (yupswing) [Akifox Studio](http://akifox.com)
 
-Transformation HAXE/OpenFL Library
-==================================
+@version 1.0.0
+[Public repository](https://github.com/yupswing/akifox-transform/)
+
+#### Transformation HAXE/OpenFL Library
 The akifox-transform library aims to provide an easy tool
 to manage affine transformations using a reliable pivot point.
 
-Notes:
-======
+#### Notes:
 This page was very helpful to understand matrix affine transformation
 http://www.senocular.com/flash/tutorials/transformmatrix/
 
