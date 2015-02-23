@@ -18,9 +18,9 @@ You can find a working example in the <a href="https://github.com/yupswing/akifo
 
 ## Example demo
 
-**Flash build:** <a href="https://dl.dropboxusercontent.com/u/683344/akifox/akifox-transform/transformation-example.swf" target="_blank">transformation-example.swf
+![Screenshot](https://dl.dropboxusercontent.com/u/683344/akifox/akifox-transform/transformation-example.png)
 
-<img src="https://dl.dropboxusercontent.com/u/683344/akifox/akifox-transform/transformation-example.png"/></a>
+**Flash build:** <a href="https://dl.dropboxusercontent.com/u/683344/akifox/akifox-transform/transformation-example.swf" target="_blank">transformation-example.swf</a>
 
 You should get a window with a OpenFL logo square.
 - <code>Z</code> to toggle debug drawings
