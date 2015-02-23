@@ -6,17 +6,27 @@ import openfl.events.Event;
 import openfl.events.EventDispatcher;
 import openfl.display.Sprite;
 
-// This page was very helpful to understand matrix affine transformation
-// http://www.senocular.com/flash/tutorials/transformmatrix/
-
 /**
-	Transformation class
- */
+
+Transformation Class
+====================
+@author Simone Cingano (yupswing) http://akifox.com	
+@version 1.0.0
+Repository: https://github.com/yupswing/akifox-transform/
+
+Transformation HAXE/OpenFL Library
+==================================
+The akifox-transform library aims to provide an easy tool
+to manage affine transformations using a reliable pivot point.
+
+Notes:
+======
+This page was very helpful to understand matrix affine transformation
+http://www.senocular.com/flash/tutorials/transformmatrix/
+
+*/
 class Transformation extends EventDispatcher
 {
-
-	//TODO: NEED TO BE REFACTORED AND **ESPECIALLY** DOCUMENTED
-
 	/** Constant factor to pass from degrees to radians **/
     public static var DEG2RAD:Float = Math.PI/180;
 	/** Constant factor to pass from radians to degrees **/
