@@ -4,8 +4,8 @@
   "license": "MIT",
   "tags": ["openfl","cross","flash","cpp","matrix","transform"],
   "description": "Affine transformations with pivot point",
-  "version": "1.0.1",
-  "releasenote": "Added support for motion.Actuate",
+  "version": "1.0.2dev",
+  "releasenote": "Minor",
   "contributors": ["yupswing"],
   "dependencies": {"openfl" : ""}
 }

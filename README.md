@@ -1,10 +1,11 @@
-**WARNING: THIS REPO IS A WORK IN PROGRESS**.
-
-[![akifox-transform](https://img.shields.io/badge/library-akifox%20transform%201.0.1-brightgreen.svg)]()
+[![akifox-transform](https://img.shields.io/badge/library-akifox%20transform%201.0.2dev-brightgreen.svg)]()
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Haxe 3](https://img.shields.io/badge/language-Haxe%203-orange.svg)](http://www.haxe.org)
 [![OpenFL 2](https://img.shields.io/badge/require-OpenFL 2-red.svg)](http://www.openfl.org)
 [![Cross platform](https://img.shields.io/badge/platform-cross%20platform-lightgrey.svg)](http://www.openfl.org)
+
+[![Library](https://img.shields.io/badge/type-haxelib%20library-orange.svg)](http://lib.haxe.org/p/akifox-transform)
+[![Haxelib](https://img.shields.io/badge/distr-v1.0.1-yellow.svg)](http://lib.haxe.org/p/akifox-transform)
 
 # akifox-transform (com.akifox.transform)
 **Transformation HAXE/OpenFL Library**
@@ -85,21 +86,23 @@ import com.akifox.transform.Transformation;
     // you change the pivot point position)
     var pivotCoordinates:Point = trf.getPivot();
 
-    trf.rotate(20); //rotate 20degress clockwise
+    trf.rotate(20); //rotate 20degrees clockwise
+    trf.skewX(30); //skew X axis 20degrees
+    Actuate.tween(trf,1,{'scalingX':2,'scalingY'"2}); //scale 2X in 1s using Actuate
 ````
 
 ## Work in progress
 
-- [ ] Working example
-  - [x] Desktop version
-  - [ ] Mobile version
-
-- [x] Cleaning and documenting code
-  - [ ] Better README.md when it will become stable.
-
 - [x] Package in a haxelib library (http://lib.haxe.org/p/akifox-transform)
 
-- [ ] Unit test
+#### Demos
+- [x] Interactive desktop version ([x] flash,[x] native, [ ] html5)
+- [ ] *Interactive mobile version* (android, ios)
+- [ ] *Sprite example with Transformation encapsulated*
+
+#### Transformation class
+- [ ] *Unit test*
+- [x] Cleaning and documenting code
 - [x] Pivot point managing
 - [x] Support for motion.Actuate (properties linked to functions get and set)
 - [x] Events (Transform and Pivot change)
