@@ -16,8 +16,6 @@ import openfl.events.KeyboardEvent;
 import openfl.ui.Mouse;
 import openfl.ui.Keyboard;
 
-import motion.Actuate;
-
 import com.akifox.transform.Transformation;
 
 class Main extends Sprite {
@@ -59,9 +57,12 @@ class Main extends Sprite {
 		mysprite.y = oy;
 		mysprite.alpha = 0.8;
 
-		// create a transformation object on the sprite
-		myspriteTrs = new Transformation(mysprite);
-		myspriteTrs.setAnchoredPivot(Transformation.ANCHOR_MIDDLE_LEFT);
+		// create a transformation object bound to the sprite
+		// the matrix identity set the transformation identity with a default translation to the center
+		var matrixIdentity = new openfl.geom.Matrix(1,0,0,1,ox,oy);
+		myspriteTrs = new Transformation(matrixIdentity);
+		myspriteTrs.bind(mysprite);
+		myspriteTrs.setAnchoredPivot(Transformation.ANCHOR_MIDDLE_CENTER);
 		lastPoint = myspriteTrs.getPivot();
 
 

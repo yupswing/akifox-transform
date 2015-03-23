@@ -1,15 +1,19 @@
-## OBSOLETE
-** This library is now included in the [PLIK Library](http://github.com/yupswing/plik) **
+[![akifox-transform](https://img.shields.io/badge/library-akifox%20transform%202.2.0-brightgreen.svg)]()
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Haxe 3](https://img.shields.io/badge/language-Haxe%203-orange.svg)](http://www.haxe.org)
+[![OpenFL 2](https://img.shields.io/badge/require-OpenFL 2-red.svg)](http://www.openfl.org)
+[![Cross platform](https://img.shields.io/badge/platform-cross%20platform-lightgrey.svg)](http://www.openfl.org)
 
-# akifox-transform (com.akifox.transform)
-**Transformation HAXE/OpenFL Library**
+[![Library](https://img.shields.io/badge/type-haxelib%20library-orange.svg)](http://lib.haxe.org/p/akifox-transform)
+[![Haxelib](https://img.shields.io/badge/distr-v2.2.0-yellow.svg)](http://lib.haxe.org/p/akifox-transform)
 
-The akifox-transform library aims to provide an easy tool to manage affine transformations using a reliable pivot point.
+# akifox-transform (com.akifox.transform.Transformation)
+**HAXE/OpenFL Affine transformation class**
+
+The akifox-transform class aims to provide an easy tool to manage affine transformations using a reliable pivot point.
 What are the affine transformation you might ask...
 - read <a href="http://en.wikipedia.org/wiki/Affine_transformation">this wikipedia page</a>
 - read <a href="http://www.senocular.com/flash/tutorials/transformmatrix/">this great flash tutorial</a>
-
-You can find a working example in the <a href="https://github.com/yupswing/akifox-transform/tree/master/example">example folder</a>. (read below for more information)
 
 ## Example demo
 
@@ -35,17 +39,11 @@ You should get a window with a OpenFL logo square.
 
 ## Install
 
-You can easily install the library from haxelib
+You can easily install the library thru haxelib
+
 ```
 haxelib install akifox-transform
 ```
-
-If you want to use instead the development version
-```
-haxelib git akifox-transform https://github.com/yupswing/akifox-transform.git
-```
-
-## Implement
 
 In your project add the library reference in your ```project.xml```
 
@@ -66,33 +64,64 @@ You can read the full Library documentation <a href="https://dl.dropboxuserconte
 
 ## Using the library
 
-Once you got a DisplayObject (Sprites, Bitmap...) you can create a Transformation object linked to it.
-(Don't use more than one transformation at a given time. I will code this check later on)
+The Transformation class works on Matrix objects.
+Anyway usually once you've got a DisplayObject (Sprites, Bitmap...) you want to link this to a Transformation.
+
 
 ````haxe
-import com.akifox.transform.Transformation;
+import com.akifox.transform.Transformation
 
 // [...]
-    trf = new Transformation(YOUROBJECT);
+    trf = new Transformation();
+    trf.bind(yourDisplayObject);
     trf.setAnchoredPivot(Transformation.ANCHOR_TOP_LEFT);
-                               
+    
     // these are the Pivot Point coordinates (they will not change unless
     // you change the pivot point position)
     var pivotCoordinates:Point = trf.getPivot();
 
-    trf.rotate(20); //rotate 20degrees clockwise
-    trf.skewX(30); //skew X axis 20degrees
+    trf.rotate(20); //rotate by 20deg clockwise
+    trf.skewX(30); //skew X axis by 30deg
     Actuate.tween(trf,1,{'scalingX':2,'scalingY'"2}); //scale 2X in 1s using Actuate
 ````
 
-## Work in progress
+## Best practice
 
-- [x] Package in a haxelib library (http://lib.haxe.org/p/akifox-transform)
+The idea behind the library wants the developer to use the transformation to change the object affine transformation properties.
 
-#### Demos
-- [x] Interactive desktop version ([x] flash,[x] native, [ ] html5)
-- [ ] *Interactive mobile version* (android, ios)
-- [ ] *Sprite example with Transformation encapsulated*
+So you can work on the large amount of transformation properties and methods as:
+
+These assignments modify the target/matrix property according to the pivot point
+(all of the degree ones are provided in Rad as well)
+````
+trf.x = valuePixels;
+trf.y = valuePixels;
+trf.rotation = valueDegrees;
+trf.skewingX = valueDegrees;
+trf.skewingY = valueDegrees;
+trf.scaling = valueFactor; //set X and Y scale to this factor
+trf.scalingX = valueFactor;
+trf.scalingY = valueFactor;
+````
+
+The methods provide instead a algebric sum change according to the pivot point
+(all of the degree ones are provided in Rad as well)
+````
+trf.translate(addPixelsX,addPixelsY);
+trf.translateX(addPixels);
+trf.translateY(addPixels);
+trf.rotate(addDegrees);
+trf.skewX(addDegree);
+trf.skewY(addDegree);
+trf.scale(multiplyFactor);
+trf.scaleX(multiplyFactor);
+trf.scaleY(multiplyFactor);
+````
+
+-----
+
+There are some interesting examples in different classes on the [PLIK library](https://github.com/yupswing/plik) that shows how to encapsulate the transformation class with an object.
+See the [Gfx Class](https://github.com/yupswing/plik/blob/master/com/akifox/plik/Gfx.hx), or Text, or SpriteContainer for an example.
 
 #### Transformation class
 - [ ] *Unit test*

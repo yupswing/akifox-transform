@@ -4,14 +4,16 @@ import openfl.geom.Matrix;
 import openfl.geom.Point;
 import openfl.events.Event;
 import openfl.events.EventDispatcher;
-import openfl.display.Sprite;
+import openfl.display.Shape;
 import openfl.display.DisplayObject;
 
 /**
 
 @author Simone Cingano (yupswing) [Akifox Studio](http://akifox.com)
 
-@version 1.0.2dev
+@licence MIT Licence
+
+@version 2.2
 [Public repository](https://github.com/yupswing/akifox-transform/)
 
 #### Transformation HAXE/OpenFL Library
@@ -29,6 +31,11 @@ class Transformation extends EventDispatcher
     public static var DEG2RAD:Float = Math.PI/180;
 	/** Constant factor to pass from radians to degrees **/
     public static var RAD2DEG:Float = 180/Math.PI;
+    // temporary objects (always reset them before using)
+    private static var point:Point = new Point();
+    private static var point2:Point = new Point();
+
+	private inline static var NULL:Float=-0.01;
 
     // Pivot Point Anchors (used by setAnchoredPivot and getAnchoredPivot)
     public inline static var ANCHOR_TOP_LEFT:Int = 0;
@@ -49,16 +56,36 @@ class Transformation extends EventDispatcher
 	private var offsetPoint:Point;
 
 	// the target object
-	private var target:DisplayObject;
+	private var _target:DisplayObject;
 
 	// target properties
-    private var realX:Float;
-    private var realY:Float;
-    private var realWidth:Float;
-    private var realHeight:Float;
-
+    private var _width:Float;
+    private var _height:Float;
+    private var _identityX:Float;
+    private var _identityY:Float;
+    private var _identityWidth:Float;
+    private var _identityHeight:Float;
 	/** The debug sprite where debugDraw() draws **/
-    public var spriteDebug:Sprite;
+    public var spriteDebug:Shape;
+
+    // THE MATRIX!
+    private var _matrix:Matrix;
+
+
+	/**
+	* Set the transformation matrix, overwriting the existing one
+	* (the pivot point will be respected)
+	* Get a copy of the transformation matrix
+	**/
+    public var matrix(get,set):Matrix;
+    private function set_matrix(m:Matrix):Matrix { 
+    	// change the matrix and adjust to respect the Pivot Point
+    	setMatrixInternal(m,true);
+    	return m;
+    }
+    private function get_matrix():Matrix {
+    	return getMatrixInternal();
+    }
 
 	/** 
 	* Class instance
@@ -66,17 +93,19 @@ class Transformation extends EventDispatcher
 	* @param target  The object target of the transformations
 	* @param pivot   An absolute point to set the pivot
 	**/
-	public function new(target:DisplayObject,?pivot:Point=null)
+	public function new(matrix:Matrix=null,width:Float=0,height:Float=0,?pivot:Point=null)
 	{
 
 		super();
 		// set the target and get the original properties
-		this.target = target;
-		realWidth = target.width;
-		realHeight = target.height;
-		realX = target.x;
-		realY = target.y;
-		spriteDebug = new Sprite();
+		//this.target = target;
+		if (matrix==null) matrix = new Matrix();
+		_matrix = matrix;
+		_identityWidth = _width =  width;
+		_identityHeight = _height = height;
+		_identityX = _matrix.tx;
+		_identityY = _matrix.ty;
+		spriteDebug = new Shape();
 
 		if (pivot==null) {
 			//set the pivot point TOPLEFT of the target if nothing specified
@@ -87,6 +116,31 @@ class Transformation extends EventDispatcher
 		}
 	}
 
+	public function destroy(){
+		this.spriteDebug = null;
+		this._matrix = null;
+		this.release();
+		this.offsetPoint = null;
+	}
+
+	// TARGET
+	// #########################################################################
+
+	/** 
+	* Bind the transformation matrix to a target (has to be a DisplayObject)
+	* It has to be done
+	**/
+	public function bind(target:DisplayObject){
+		this._target = target;
+		this.x = target.x;
+		this.y = target.y;
+		this.updateSize();
+	}
+
+	private function release(){
+		this._target = null;
+	}
+
 	/**
 	* When the size is changed externally of the Transformation class
    	* you should use this method to update the size internally
@@ -95,20 +149,30 @@ class Transformation extends EventDispatcher
     * but the Transformation class can't be aware of that if you don't
    	* call this method
    	*
+   	* ----
+   	*
+   	* Otherwise you can set the size to arbitrary values if you want to
+   	* set a certain AnchoredPivot based on the rect you specify
+   	*
 	**/
-    public function updateSize() {
+    public function updateSize(?nw:Float=0,?nh:Float=0) {
     	/*  */
 
 		// get current translation and the complete matrix
     	var translation:Point = getTranslation();
-    	var currentMatrix:Matrix = getMatrix();
+    	var currentMatrix:Matrix = getMatrixInternal();
 
     	// remove all transformation
     	this.identity();
 
-    	// get the real width and height without transformations
-    	realWidth = target.width;
-    	realHeight = target.height;
+    	// get the _identity width and height without transformations
+    	if ((nw==0 || nh==0)&&(_target != null)) {
+	    	_identityWidth = _target.width;
+	    	_identityHeight = _target.height;
+	    } else {
+	    	_identityWidth = nw;
+	    	_identityHeight = nh;
+	    }
 
     	// reset the anchored pivot (based on new size)
     	if (this.pivotPointAnchor!=-1) setAnchoredPivot(this.pivotPointAnchor);
@@ -119,6 +183,8 @@ class Transformation extends EventDispatcher
     	// restore the original translation
         // (the new given anchored pivot will count)
     	this.setTranslation(translation);
+    	currentMatrix = null;
+    	translation = null;
     }
 
 
@@ -239,7 +305,7 @@ class Transformation extends EventDispatcher
 			spriteDebug.graphics.endFill();
 		}
 
-		// original target 0,0 transformed
+		// original  0,0 transformed
 		if (drawOrigin) {
 			spriteDebug.graphics.beginFill(0xFFFF00,0.5);
 			spriteDebug.graphics.drawCircle(p0.x,p0.y,5);
@@ -249,21 +315,21 @@ class Transformation extends EventDispatcher
 		// original target boundaries (same as original target rect)
 		if (drawOriginal) {
 			spriteDebug.graphics.lineStyle(2, 0x0000FF, .5, false);
-			spriteDebug.graphics.drawRect(realX,realY,realWidth,realHeight);
+			spriteDebug.graphics.drawRect(_identityX,_identityY,_identityWidth,_identityHeight);
 		}
 
 		// transformed target boundaries
 		if (drawBoundaries) {
 			var p1:Point;
-			p1 = transformPoint(new Point(realWidth,0));
+			p1 = transformPoint(new Point(_identityWidth,0));
 			var p2:Point;
-			p2 = transformPoint(new Point(0,realHeight));
+			p2 = transformPoint(new Point(0,_identityHeight));
 			var p3:Point;
-			p3 = transformPoint(new Point(realWidth,realHeight));
-			var realZeroX = Math.min(Math.min(Math.min(p0.x,p1.x),p2.x),p3.x);
-			var realZeroY = Math.min(Math.min(Math.min(p0.y,p1.y),p2.y),p3.y);
+			p3 = transformPoint(new Point(_identityWidth,_identityHeight));
+			var _identityZeroX = Math.min(Math.min(Math.min(p0.x,p1.x),p2.x),p3.x);
+			var _identityZeroY = Math.min(Math.min(Math.min(p0.y,p1.y),p2.y),p3.y);
 			spriteDebug.graphics.lineStyle(2, 0xFF00FF, .5, false);
-			spriteDebug.graphics.drawRect(realZeroX,realZeroY,target.width,target.height);
+			spriteDebug.graphics.drawRect(_identityZeroX,_identityZeroY,_width,_height);
 		}
 
 		// rotation circle
@@ -365,16 +431,16 @@ class Transformation extends EventDispatcher
 
 	// internal (used by getAnchoredPivotOffset and getAnchoredPivot)
 	private function getAnchorPivot(pivotPointAnchor:Int,absolute:Bool):Point {
-		// realWidth / 2 * 0 is LEFT      .______
-		// realWidth / 2 * 1 is CENTER    ___.___
-		// realWidth / 2 * 2 is RIGHT     ______.
+		// _identityWidth / 2 * 0 is LEFT      .______
+		// _identityWidth / 2 * 1 is CENTER    ___.___
+		// _identityWidth / 2 * 2 is RIGHT     ______.
 		// and so on for the Y
 		if (pivotPointAnchor<0 || pivotPointAnchor>8) pivotPointAnchor = 0;
 		var pivotPositionX = pivotPointAnchor % 3;
 		var pivotPositionY = Std.int(pivotPointAnchor / 3);
 
-		var x = realWidth/2*pivotPositionX;
-		var y = realHeight/2*pivotPositionY;
+		var x = _identityWidth/2*pivotPositionX;
+		var y = _identityHeight/2*pivotPositionY;
 
 		// add the current translation to the point
 		// to get the absolute position
@@ -394,21 +460,11 @@ class Transformation extends EventDispatcher
     	// adjust==true is needed to respect the Pivot Point
     	var originalPoint:Point = new Point(0,0);
     	if (adjust) originalPoint = getPivot();  //this before apply the transform
-        target.transform.matrix = m; 			 //apply the transformation
+        _matrix = m; 	 //apply the transformation
+        m = null;
         if (adjust) adjustOffset(originalPoint); //this after apply the transform
+        if (_target != null) this._target.transform.matrix = getMatrixInternal();
         this.onTransform();
-    }
-
-	/** 
-	* Set the transformation matrix, overwriting the existing one
-	*
-	* (the pivot point will be respected)
-	* 
-	* @param matrix  The matrix to be applied
-	**/
-    public function setMatrix(matrix:Matrix):Void { 
-    	// change the matrix and adjust to respect the Pivot Point
-    	setMatrixInternal(matrix,true);
     }
 
 	/** 
@@ -418,22 +474,13 @@ class Transformation extends EventDispatcher
 	* (the pivot point will be respected)
 	**/
     public function setMatrixTo(a:Float,b:Float,c:Float,d:Float,tx:Float,ty:Float) {
-    	// make a matrix with the specified parameters
-    	var m:Matrix = new Matrix(a,b,c,d,tx,ty);
     	// update the matrix and adjust to respect the Pivot Point
-    	setMatrixInternal(m,true);
+    	setMatrixInternal(new Matrix(a,b,c,d,tx,ty),true);
     }
-
-	/** 
-	* Get a copy of the current transformation matrix
-	*
-	* (the pivot point will **not** be respected)
-	**/
-    public function getMatrix():Matrix
+    private function getMatrixInternal():Matrix
     {
-        return target.transform.matrix.clone();
+    	return _matrix.clone();
     }
-
 
 	// #########################################################################
 
@@ -441,7 +488,7 @@ class Transformation extends EventDispatcher
 	private function adjustOffset(originalPoint:Point) {
 
         //get the target matrix to apply the transformation
-	    var m:Matrix = getMatrix();
+	    var m:Matrix = getMatrixInternal();
 
 		//get the pivot NEW absolute position
         var transformedPoint:Point = m.transformPoint(offsetPoint);
@@ -472,7 +519,7 @@ class Transformation extends EventDispatcher
 	**/
     public function transformPoint(point:Point):Point {
         // apply the current transformation on a point
-        return target.transform.matrix.transformPoint(point);
+        return _matrix.transformPoint(point);
     }
 
 	/** 
@@ -485,7 +532,7 @@ class Transformation extends EventDispatcher
     public function deltaTransformPoint(point:Point):Point {
         // apply the current transformation on a point
         // [ignore the translation]
-        return target.transform.matrix.deltaTransformPoint(point);
+        return _matrix.deltaTransformPoint(point);
     }
 
 	/** 
@@ -501,7 +548,7 @@ class Transformation extends EventDispatcher
     public function inverseTransformPoint(point:Point):Point {
         // remove the current transformation on a point
         // (give a transformed point to get a 'identity' point)
-    	var m:Matrix = getMatrix();
+    	var m:Matrix = getMatrixInternal();
     	m.invert();
         return m.transformPoint(point);
     }
@@ -521,7 +568,7 @@ class Transformation extends EventDispatcher
         // remove the current transformation on a point
         // (give a transformed point to get a 'identity' point)
         // [ignore the translation]
-    	var m:Matrix = getMatrix();
+    	var m:Matrix = getMatrixInternal();
     	m.invert();
         return m.deltaTransformPoint(point);
     }
@@ -539,8 +586,8 @@ class Transformation extends EventDispatcher
     public function identity(){
 		 // reset the matrix
          var m = new Matrix();
-         m.tx = realX - offsetPoint.x;
-         m.ty = realY - offsetPoint.y;
+         m.tx = _identityX - offsetPoint.x;
+         m.ty = _identityY - offsetPoint.y;
          setMatrixInternal(m);
     }
 
@@ -556,7 +603,7 @@ class Transformation extends EventDispatcher
 	**/
 	public function translate(dx:Float=0, dy:Float=0):Void
 	{
-	    var m:Matrix = getMatrix();
+	    var m:Matrix = getMatrixInternal();
 	    m.tx += dx;
 	    m.ty += dy;
 	    setMatrixInternal(m);
@@ -580,7 +627,7 @@ class Transformation extends EventDispatcher
 	**/
 	public function setTranslation(translation:Point):Void
 	{
-	    var m:Matrix = getMatrix();
+	    var m:Matrix = getMatrixInternal();
 	    var transformedOffset:Point = deltaTransformPoint(offsetPoint);
 	    m.tx = translation.x-transformedOffset.x;
 	    m.ty = translation.y-transformedOffset.y;
@@ -591,7 +638,7 @@ class Transformation extends EventDispatcher
 	* @param tx The X coordinate
 	**/
 	public function setTranslationX(tx:Float=0):Float {
-	    var m:Matrix = getMatrix();
+	    var m:Matrix = getMatrixInternal();
 	    m.tx = tx-deltaTransformPoint(offsetPoint).x;
 	    setMatrixInternal(m);
 	    return tx;
@@ -601,7 +648,7 @@ class Transformation extends EventDispatcher
 	* @param ty The Y coordinate
 	**/
 	public function setTranslationY(ty:Float=0):Float {
-	    var m:Matrix = getMatrix();
+	    var m:Matrix = getMatrixInternal();
 	    m.ty = ty-deltaTransformPoint(offsetPoint).y;
 	    setMatrixInternal(m);
 	    return ty;
@@ -614,7 +661,7 @@ class Transformation extends EventDispatcher
 	public function getTranslation():Point
 	{
 		var transformedOffset:Point = deltaTransformPoint(offsetPoint);
-	    return new Point(target.transform.matrix.tx+transformedOffset.x,target.transform.matrix.ty+transformedOffset.y);
+	    return new Point(_matrix.tx+transformedOffset.x,_matrix.ty+transformedOffset.y);
 	}
 
 	/** 
@@ -642,7 +689,7 @@ class Transformation extends EventDispatcher
 	**/
 	public function getPosition():Point
 	{
-	    return new Point(target.transform.matrix.tx,target.transform.matrix.ty);
+	    return new Point(_matrix.tx,_matrix.ty);
 	}
 
 	/** 
@@ -652,7 +699,7 @@ class Transformation extends EventDispatcher
 	**/
 	public function getPositionX():Float
 	{
-		return target.transform.matrix.tx;
+		return _matrix.tx;
 	}
 
 	/** 
@@ -662,7 +709,7 @@ class Transformation extends EventDispatcher
 	**/
 	public function getPositionY():Float
 	{
-		return target.transform.matrix.ty;
+		return _matrix.ty;
 	}
 
 
@@ -677,10 +724,20 @@ class Transformation extends EventDispatcher
 	private function set_translationY(value:Float):Float { return setTranslationY(value); }
 
 
+	/** Use getTranslationX and setTranslationX **/
+	public var x(get, set):Float;
+	private function get_x():Float { return getTranslationX(); }
+	private function set_x(value:Float):Float { return setTranslationX(value); }
+
+	/** Use getTranslationY and setTranslationY **/
+	public var y(get, set):Float;
+	private function get_y():Float { return getTranslationY(); }
+	private function set_y(value:Float):Float { return setTranslationY(value); }
+
+
 
     // SKEW TRANSFORMATION
 	// #########################################################################
-
 
 	/** 
 	* Set the skew to a given value in Radians
@@ -696,13 +753,13 @@ class Transformation extends EventDispatcher
 	{
 
         //get the target matrix to apply the transformation
-	    var m:Matrix = getMatrix();
+	    var m:Matrix = getMatrixInternal();
 
 		// apply the skew (matrix.c is HORIZONTAL, matrix.b is VERTICAL)
-	    if (skewXRad!=-0.1) {
+	    if (skewXRad!=NULL) {
 	    	m.c = Math.tan(skewXRad)*getScaleX();
 	    }
-	    if (skewYRad!=-0.1) {
+	    if (skewYRad!=NULL) {
 	    	m.b = Math.tan(skewYRad)*getScaleY();
 	    }
 
@@ -723,10 +780,10 @@ class Transformation extends EventDispatcher
 	public function setSkew(skewXDeg:Float, skewYDeg:Float):Void
 	{
 		// check null to avoid error on multiplication
-		var skewXRad:Float=-0.1;
-		var skewYRad:Float=-0.1;
-		if (skewXDeg!=-0.1) skewXRad = skewXDeg*DEG2RAD;
-		if (skewYDeg!=-0.1) skewYRad = skewYDeg*DEG2RAD;
+		var skewXRad:Float=NULL;
+		var skewYRad:Float=NULL;
+		if (skewXDeg!=NULL) skewXRad = skewXDeg*DEG2RAD;
+		if (skewYDeg!=NULL) skewYRad = skewYDeg*DEG2RAD;
 		setSkewRad(skewXRad,skewYRad);
 	}
 
@@ -737,7 +794,7 @@ class Transformation extends EventDispatcher
 	* 
 	* @param skewXDeg Value for the X axis
 	**/
-	public function setSkewX(skewXDeg:Float=-0.1):Float { setSkew(skewXDeg,-0.1); return skewXDeg; }
+	public function setSkewX(skewXDeg:Float=NULL):Float { setSkew(skewXDeg,NULL); return skewXDeg; }
 
 	/** 
 	* Set the skew on the Y axis to a given value in Degrees
@@ -746,7 +803,7 @@ class Transformation extends EventDispatcher
 	* 
 	* @param skewYDeg Value for the Y axis
 	**/
-	public function setSkewY(skewYDeg:Float):Float { setSkew(-0.1,skewYDeg); return skewYDeg; }
+	public function setSkewY(skewYDeg:Float):Float { setSkew(NULL,skewYDeg); return skewYDeg; }
 
 	/** 
 	* Set the skew on the X axis to a given value in Radians
@@ -755,7 +812,7 @@ class Transformation extends EventDispatcher
 	* 
 	* @param skewXRad Value for the X axis
 	**/
-	public function setSkewXRad(skewXRad:Float):Float { setSkewRad(skewXRad,-0.1); return skewXRad; }
+	public function setSkewXRad(skewXRad:Float):Float { setSkewRad(skewXRad,NULL); return skewXRad; }
 
 	/** 
 	* Set the skew on the Y axis to a given value in Radians
@@ -764,7 +821,7 @@ class Transformation extends EventDispatcher
 	* 
 	* @param skewYRad Value for the X axis
 	**/
-	public function setSkewYRad(skewYRad:Float):Float { setSkewRad(-0.1,skewYRad); return skewYRad; }
+	public function setSkewYRad(skewYRad:Float):Float { setSkewRad(NULL,skewYRad); return skewYRad; }
 	
 	/** 
 	* Apply a skew in Radians
@@ -775,14 +832,14 @@ class Transformation extends EventDispatcher
 	* @param skewRad Value for the X axis (and Y axis if the skewY is not specified)
 	* @param skewYRad (optional) Value for the Y axis
 	**/
-	public function skewRad(skewRad:Float, ?skewYRad:Float=-0.1):Void
+	public function skewRad(skewRad:Float, ?skewYRad:Float=NULL):Void
 	{
         //get the target matrix to apply the transformation
 	    var m:Matrix = new Matrix();
 
 		var skewXRad:Float = skewRad;
 		// if not specified it will set the x and y skew using the same value
-		if (skewYRad==-0.1) skewYRad = skewRad;
+		if (skewYRad==NULL) skewYRad = skewRad;
 
 		// apply the skew (matrix.c is HORIZONTAL, matrix.b is VERTICAL)
 	    if (skewXRad!=0.0) {
@@ -793,7 +850,7 @@ class Transformation extends EventDispatcher
 	    }
 	    
 		//apply the matrix to the target
-	    m.concat(getMatrix());
+	    m.concat(getMatrixInternal());
 	    setMatrixInternal(m,true);
 	}
 
@@ -806,10 +863,10 @@ class Transformation extends EventDispatcher
 	* @param skewDeg Value for the X axis (and Y axis if the skewY is not specified)
 	* @param skewYDeg (optional) Value for the Y axis
 	**/
-	public function skew(skewDeg:Float,?skewYDeg:Float=-0.1):Void {
+	public function skew(skewDeg:Float,?skewYDeg:Float=NULL):Void {
 		var skewXDeg:Float = skewDeg;
 		// if not specified it will set the x and y skew using the same value
-		if (skewYDeg==-0.1) skewYDeg = skewDeg;
+		if (skewYDeg==NULL) skewYDeg = skewDeg;
 		skewRad(skewXDeg*DEG2RAD,skewYDeg*DEG2RAD);
 	}
 
@@ -848,9 +905,9 @@ class Transformation extends EventDispatcher
 	**/
     public function getSkewXRad():Float
     {
-    	var px = new Point(0, 1);
-		px = deltaTransformPoint(px);
-		return -(Math.atan2(px.y, px.x) - Math.PI/2);
+		point.x = 0; point.y = 1;
+		point = deltaTransformPoint(point);
+		return -(Math.atan2(point.y, point.x) - Math.PI/2);
     }
 
    	/** 
@@ -860,9 +917,9 @@ class Transformation extends EventDispatcher
 	**/
 	public function getSkewYRad():Float
 	{
-		var py = new Point(1, 0);
-		py = deltaTransformPoint(py);
-		return Math.atan2(py.y, py.x);
+		point.x = 1; point.y = 0;
+		point = deltaTransformPoint(point);
+		return Math.atan2(point.y, point.x);
 	} 
 
    	/** 
@@ -903,6 +960,9 @@ class Transformation extends EventDispatcher
 	// SCALE TRANSFORMATION
 	// #########################################################################
 
+	private var _currentScaleX:Float = 1;
+	private var _currentScaleY:Float = 1;
+
 	/** 
 	* Apply a scale
 	*
@@ -911,18 +971,20 @@ class Transformation extends EventDispatcher
 	* @param factor Factor for the X axis (and Y axis if the yFactor is not specified)
 	* @param yFactor (optional) Factor for the Y axis
 	**/
-	public function scale(factor:Float=1.0, ?yFactor:Float=-0.1):Void
+	public function scale(factor:Float=1.0, ?yFactor:Float=NULL):Void
 	{
 
 		var xFactor:Float = factor;
+		_currentScaleX*=xFactor;
 		// if not specified it will scale x and y using the same factor
-		if (yFactor==-0.1) yFactor = factor;
+		if (yFactor==NULL) yFactor = factor;
+		_currentScaleY*=yFactor;
 
 		//get the pivot absolute position
 	    // (keep this BEFORE applying the new matrix to the target)
 
         //get the target matrix to apply the transformation
-	    var m:Matrix = getMatrix();
+	    var m:Matrix = getMatrixInternal();
 
 		// apply the scaling
 		m.a *= xFactor;
@@ -959,16 +1021,18 @@ class Transformation extends EventDispatcher
 	* @param value Value for the X axis (and Y axis if the scaleY is not specified)
 	* @param scaleY (optional) Value for the Y axis
 	**/
-	public function setScale(value:Float=1.0, ?scaleY:Float=-0.1):Void
+	public function setScale(value:Float=1.0, ?scaleY:Float=NULL):Float
 	{
 
 		var scaleX:Float = value;
 		// if not specified it will set the x and y scale using the same value
-		if (scaleY==-0.1) scaleY = value;
+		if (scaleY==NULL) scaleY = value;
 
         //apply the transformation
 		setScaleX(scaleX);
 		setScaleY(scaleY);
+
+		return value;
 
 	}
 
@@ -979,7 +1043,7 @@ class Transformation extends EventDispatcher
 	**/
 	public function setScaleX(scaleX:Float):Float
 	{
-        var m:Matrix = getMatrix();
+        var m:Matrix = getMatrixInternal();
 		var oldValue:Float = getScaleX();
 		// avoid division by zero 
 		if (oldValue!=0)
@@ -995,6 +1059,7 @@ class Transformation extends EventDispatcher
 			m.b = Math.sin(skewYRad) * scaleX;
 		}
 		setMatrixInternal(m,true);
+		_currentScaleX = scaleX;
 		return scaleX;
 	}
 
@@ -1005,7 +1070,7 @@ class Transformation extends EventDispatcher
 	**/
 	public function setScaleY(scaleY:Float):Float
 	{
-        var m:Matrix = getMatrix();
+        var m:Matrix = getMatrixInternal();
 		var oldValue:Float = getScaleY();
 		// avoid division by zero 
 		if (oldValue!=0)
@@ -1021,6 +1086,7 @@ class Transformation extends EventDispatcher
 			m.d =  Math.cos(skewXRad) * scaleY;
 		}
 		setMatrixInternal(m,true);
+		_currentScaleY = scaleY;
 		return scaleY;
 	}
 
@@ -1029,17 +1095,22 @@ class Transformation extends EventDispatcher
 	**/
 	public function getScaleX():Float
 	{
-        var m:Matrix = target.transform.matrix;
-		return Math.sqrt(m.a*m.a + m.b*m.b);
+		return _currentScaleX;
+		//return Math.sqrt(_matrix.a*_matrix.a + _matrix.b*_matrix.b);
 	}
 	/** 
 	* @returns The current scale factor on the Y axis
 	**/
 	public function getScaleY():Float
 	{
-        var m:Matrix = target.transform.matrix;
-		return Math.sqrt(m.c*m.c + m.d*m.d);
+		return _currentScaleY;
+		//return Math.sqrt(_matrix.c*_matrix.c + _matrix.d*_matrix.d);
 	}
+
+	/** Use getScale and setScale **/
+	public var scaling(get, set):Float;
+	private function get_scaling():Float { return getScaleX(); }
+	private function set_scaling(factor:Float):Float { return setScale(factor); }
 
 	/** Use getScaleX and setScaleX **/
 	public var scalingX(get, set):Float;
@@ -1081,7 +1152,7 @@ class Transformation extends EventDispatcher
         var absolutePoint:Point = getPivot();
 
         //get the target matrix to apply the transformation
-	    var m:Matrix = getMatrix();
+	    var m:Matrix = getMatrixInternal();
 
 	    //move the target(matrix)
 	    //the pivot point will match the origin (0,0)
@@ -1158,25 +1229,22 @@ class Transformation extends EventDispatcher
 		// apply the transformation matrix to a point and
 		// calculate the rotation happened
 		// thanks to http://stackoverflow.com/users/1035293/bugshake
-
-		var translate:Point;
 		var scale:Float;
 
-		var m:Matrix = getMatrix();
+		var m:Matrix = getMatrixInternal();
 
 		// extract translation
-		var p:Point = new Point(0,0);
-		translate = m.transformPoint(p);
-		m.translate( -translate.x, -translate.y);
+		point.x = point.y = 0;
+		point2 = m.transformPoint(point);
+		m.translate( -point2.x, -point2.y);
 
 		// extract (uniform) scale...
-		p.x = 1.0;
-		p.y = 0.0;
-		p = m.transformPoint(p);
-		scale = p.length;
+		point.x = 1; point.y = 0;
+		point = m.transformPoint(point);
+		scale = point.length;
 
 		// ...and rotation
-		return Math.atan2(p.y, p.x);
+		return Math.atan2(point.y, point.x);
 	}
 
 	/** 
@@ -1200,5 +1268,3 @@ class Transformation extends EventDispatcher
 
 
 }
-
-

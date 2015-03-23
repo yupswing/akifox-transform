@@ -3,9 +3,9 @@
   "url" : "https://github.com/yupswing/akifox-transform",
   "license": "MIT",
   "tags": ["openfl","cross","flash","cpp","matrix","transform"],
-  "description": "Affine transformations with pivot point",
-  "version": "1.0.2dev",
-  "releasenote": "Minor",
+  "description": "Affine matrix transformations with pivot point",
+  "version": "2.2.0",
+  "releasenote": "Change internal structure and interface for better performances and writing",
   "contributors": ["yupswing"],
   "dependencies": {"openfl" : ""}
 }

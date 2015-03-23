@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<meta title="transform-example-interactive" package="com.akifox.transform-example-interactive" version="1.0.2dev" company="Akifox Studio" />
+	<meta title="transform-example-interactive" package="com.akifox.transform-example-interactive" version="2.2.0" company="Akifox Studio" />
     <app main="Main" path="bin" file="transform-example-interactive" />
 
 	<window fps="60" background="0x333333" />
