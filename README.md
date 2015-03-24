@@ -1,4 +1,4 @@
-[![akifox-transform](https://img.shields.io/badge/library-akifox%20transform%202.2.0-brightgreen.svg)]()
+[![akifox-transform](https://img.shields.io/badge/library-akifox%20transform%202.2.1dev-brightgreen.svg)]()
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Haxe 3](https://img.shields.io/badge/language-Haxe%203-orange.svg)](http://www.haxe.org)
 [![OpenFL 2](https://img.shields.io/badge/require-OpenFL 2-red.svg)](http://www.openfl.org)

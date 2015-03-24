@@ -4,7 +4,7 @@
   "license": "MIT",
   "tags": ["openfl","cross","flash","cpp","matrix","transform"],
   "description": "Affine matrix transformations with pivot point",
-  "version": "2.2.0",
+  "version": "2.2.1dev",
   "releasenote": "Change internal structure and interface for better performances and writing",
   "contributors": ["yupswing"],
   "dependencies": {"openfl" : ""}

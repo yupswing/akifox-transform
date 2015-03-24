@@ -13,7 +13,7 @@ import openfl.display.DisplayObject;
 
 @licence MIT Licence
 
-@version 2.2
+@version 2.2.1dev
 [Public repository](https://github.com/yupswing/akifox-transform/)
 
 #### Transformation HAXE/OpenFL Library
