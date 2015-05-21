@@ -1,11 +1,11 @@
-[![akifox-transform](https://img.shields.io/badge/library-akifox%20transform%202.2.1dev-brightgreen.svg)]()
+[![akifox-transform](https://img.shields.io/badge/library-akifox%20transform%202.2.1-brightgreen.svg)]()
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Haxe 3](https://img.shields.io/badge/language-Haxe%203-orange.svg)](http://www.haxe.org)
 [![OpenFL 2](https://img.shields.io/badge/require-OpenFL 2-red.svg)](http://www.openfl.org)
 [![Cross platform](https://img.shields.io/badge/platform-cross%20platform-lightgrey.svg)](http://www.openfl.org)
 
 [![Library](https://img.shields.io/badge/type-haxelib%20library-orange.svg)](http://lib.haxe.org/p/akifox-transform)
-[![Haxelib](https://img.shields.io/badge/distr-v2.2.0-yellow.svg)](http://lib.haxe.org/p/akifox-transform)
+[![Haxelib](https://img.shields.io/badge/distr-v2.2.1-yellow.svg)](http://lib.haxe.org/p/akifox-transform)
 
 # akifox-transform (com.akifox.transform.Transformation)
 **HAXE/OpenFL Affine transformation class**
@@ -14,6 +14,11 @@ The akifox-transform class aims to provide an easy tool to manage affine transfo
 What are the affine transformation you might ask...
 - read <a href="http://en.wikipedia.org/wiki/Affine_transformation">this wikipedia page</a>
 - read <a href="http://www.senocular.com/flash/tutorials/transformmatrix/">this great flash tutorial</a>
+
+# NOTE
+
+The class works quite fine with OpenFL 3, there are just few incompatibilities that might present problems.
+If you see a possible bug please test your app with the option `-Dlegacy` before filing an issue.
 
 ## Example demo
 
@@ -67,22 +72,67 @@ You can read the full Library documentation <a href="https://dl.dropboxuserconte
 The Transformation class works on Matrix objects.
 Anyway usually once you've got a DisplayObject (Sprites, Bitmap...) you want to link this to a Transformation.
 
+````haxe
+package ;
+import openfl.display.Sprite;
+import openfl.Lib;
+import openfl.geom.Matrix;
+import com.akifox.transform.Transformation;
+
+class Main extends Sprite {
+
+    public function new() {
+      super();
+      Lib.current.stage.addChild(this);
+
+      //[...]
+
+      var trf = new Transformation();
+      trf.bind(yourDisplayObject);
+      trf.setAnchoredPivot(Transformation.ANCHOR_TOP_LEFT);
+
+      // these are the Pivot Point coordinates (they will not change unless
+      // you change the pivot point position)
+      var pivotCoordinates:Point = trf.getPivot();
+
+      trf.rotate(20); //rotate by 20deg clockwise
+      trf.skewX(30); //skew X axis by 30deg
+      Actuate.tween(trf,1,{'scalingX':2,'scalingY'"2}); //scale 2X in 1s using Actuate
+    }
+
+}
+````
+
+But you can use the library to manipulate a Matrix without bind it to a DisplayObject
 
 ````haxe
-import com.akifox.transform.Transformation
+package ;
+import openfl.display.Sprite;
+import openfl.Lib;
+import openfl.geom.Matrix;
+import com.akifox.transform.Transformation;
 
-// [...]
-    trf = new Transformation();
-    trf.bind(yourDisplayObject);
-    trf.setAnchoredPivot(Transformation.ANCHOR_TOP_LEFT);
-    
-    // these are the Pivot Point coordinates (they will not change unless
-    // you change the pivot point position)
-    var pivotCoordinates:Point = trf.getPivot();
+class Main extends Sprite {
 
-    trf.rotate(20); //rotate by 20deg clockwise
-    trf.skewX(30); //skew X axis by 30deg
-    Actuate.tween(trf,1,{'scalingX':2,'scalingY'"2}); //scale 2X in 1s using Actuate
+    var trf:Transformation;
+
+    public function new() {
+      super();
+      Lib.current.stage.addChild(this);
+      trf = new Transformation(new Matrix(),100,50);
+  		addChild(trf.spriteDebug); //debug
+      trf.addEventListener(Transformation.TRANSFORM, onTransform); //debug
+      trf.rotate(20); //rotate by 20deg clockwise
+      trf.skewX(30); //skew X axis by 30deg
+
+      var transformedMatrix = trf.matrix; //get the matrix for your own use!
+    }
+
+    public function onTransform(event:Event) {
+      trf.debugDraw();
+    }
+
+}
 ````
 
 ## Best practice
@@ -135,16 +185,16 @@ See the [Gfx Class](https://github.com/yupswing/plik/blob/master/com/akifox/plik
   - [x] Add
 - [x] Skew
   - [x] Get
-  - [x] Set 
+  - [x] Set
   - [x] Add
 - [x] Scale
   - [x] Get
-  - [x] Set 
+  - [x] Set
   - [x] Add
 - [ ] Flip
   - [ ] Get (it looks like impossible!)
-  - [x] Set 
+  - [x] Set
 - [x] Rotate
   - [x] Get
-  - [x] Set 
+  - [x] Set
   - [x] Add

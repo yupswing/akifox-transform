@@ -16,6 +16,8 @@ import openfl.events.KeyboardEvent;
 import openfl.ui.Mouse;
 import openfl.ui.Keyboard;
 
+import motion.Actuate;
+
 import com.akifox.transform.Transformation;
 
 class Main extends Sprite {
@@ -91,7 +93,7 @@ class Main extends Sprite {
 
     // EVENTS FROM THE TRANSFORMATION CLASS
 	// #########################################################################
-	
+
 	public function onTransform(event:Event) {
 		if (debugdraw) myspriteTrs.debugDraw();
 	}
@@ -286,7 +288,7 @@ class Main extends Sprite {
 	// #########################################################################
 
 	private function onSpecialKeyDown(event:KeyboardEvent):Void {
-		
+
 		switch (event.keyCode) {
 			case Keyboard.SHIFT: rotatingMode = true;
 			case Keyboard.CONTROL: skewingMode = true;
@@ -296,7 +298,7 @@ class Main extends Sprite {
 	}
 
 	private function onSpecialKeyUp(event:KeyboardEvent):Void {
-		
+
 		switch (event.keyCode) {
 			case Keyboard.SHIFT: rotatingMode = false;
 			case Keyboard.CONTROL: skewingMode = false;
@@ -307,7 +309,7 @@ class Main extends Sprite {
 
 	private function onKeyUp(event:KeyboardEvent):Void {
 		if (dragged) return;
-		
+
 		switch (event.keyCode) {
 			// Z for debugging
 			case Keyboard.Z: debugToggle();
@@ -319,7 +321,7 @@ class Main extends Sprite {
 			case Keyboard.LEFT: myspriteTrs.translateX(-15);
 			case Keyboard.RIGHT: myspriteTrs.translateX(15);
 			// Q A W S to skew
-			case Keyboard.Q: myspriteTrs.skewX(15); 
+			case Keyboard.Q: myspriteTrs.skewX(15);
 			case Keyboard.A: myspriteTrs.skewX(-15);
 			case Keyboard.W: myspriteTrs.skewY(15);
 			case Keyboard.S: myspriteTrs.skewY(-15);
@@ -350,5 +352,5 @@ class Main extends Sprite {
 		else myspriteTrs.debugDraw();
 		debugdraw = !debugdraw;
 	}
-	
+
 }
